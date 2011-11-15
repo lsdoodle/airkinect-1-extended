@@ -4,8 +4,8 @@
  * Date: 10/4/11
  * Time: 6:52 PM
  */
-package com.as3nui.airkinect.manager.gestures {
-	import com.as3nui.airkinect.manager.skeleton.Skeleton;
+package com.as3nui.airkinect.extended.manager.gestures {
+	import com.as3nui.airkinect.extended.manager.skeleton.Skeleton;
 
 	import flash.display.Sprite;
 	import flash.events.Event;

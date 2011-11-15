@@ -4,8 +4,8 @@
  * Date: 10/1/11
  * Time: 3:50 PM
  */
-package com.as3nui.airkinect.manager {
-	import com.as3nui.airkinect.manager.skeleton.Skeleton;
+package com.as3nui.airkinect.extended.manager {
+	import com.as3nui.airkinect.extended.manager.skeleton.Skeleton;
 	import com.as3nui.nativeExtensions.kinect.AIRKinect;
 	import com.as3nui.nativeExtensions.kinect.data.AIRKinectCameraConstants;
 	import com.as3nui.nativeExtensions.kinect.data.SkeletonFrame;

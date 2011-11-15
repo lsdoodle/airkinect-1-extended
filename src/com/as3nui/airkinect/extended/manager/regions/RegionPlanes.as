@@ -4,7 +4,7 @@
  * Date: 10/3/11
  * Time: 4:33 PM
  */
-package com.as3nui.airkinect.manager.regions {
+package com.as3nui.airkinect.extended.manager.regions {
 	import flash.geom.Rectangle;
 
 	public class RegionPlanes {

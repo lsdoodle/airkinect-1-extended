@@ -4,10 +4,10 @@
  * Date: 10/3/11
  * Time: 5:21 PM
  */
-package com.as3nui.airkinect.manager.gestures {
-	import com.as3nui.airkinect.manager.skeleton.DeltaResult;
-	import com.as3nui.airkinect.manager.regions.Region;
-	import com.as3nui.airkinect.manager.skeleton.Skeleton;
+package com.as3nui.airkinect.extended.manager.gestures {
+	import com.as3nui.airkinect.extended.manager.skeleton.DeltaResult;
+	import com.as3nui.airkinect.extended.manager.regions.Region;
+	import com.as3nui.airkinect.extended.manager.skeleton.Skeleton;
 
 	import flash.geom.Vector3D;
 	import flash.utils.Dictionary;

@@ -4,7 +4,7 @@
  * Date: 10/3/11
  * Time: 5:53 PM
  */
-package com.as3nui.airkinect.manager.gestures {
+package com.as3nui.airkinect.extended.manager.gestures {
 	public class GestureState {
 		public static const GESTURE_IDLE:String 		= "idle";
 		public static const GESTURE_STARTED:String 		= "started";

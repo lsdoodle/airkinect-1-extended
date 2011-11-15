@@ -4,8 +4,8 @@
  * Date: 10/3/11
  * Time: 11:03 AM
  */
-package com.as3nui.airkinect.manager.regions {
-	import com.as3nui.airkinect.manager.skeleton.Skeleton;
+package com.as3nui.airkinect.extended.manager.regions {
+	import com.as3nui.airkinect.extended.manager.skeleton.Skeleton;
 
 	import flash.geom.Vector3D;
 

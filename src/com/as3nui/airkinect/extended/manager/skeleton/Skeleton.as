@@ -4,7 +4,7 @@
  * Date: 10/1/11
  * Time: 4:42 PM
  */
-package com.as3nui.airkinect.manager.skeleton {
+package com.as3nui.airkinect.extended.manager.skeleton {
 	import com.as3nui.nativeExtensions.kinect.data.SkeletonPosition;
 
 	import flash.geom.Vector3D;
