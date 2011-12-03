@@ -11,7 +11,10 @@ package com.as3nui.airkinect.extended.manager.regions {
 	import flash.geom.Vector3D;
 
 	public class Region {
-
+		private static var REGION_COUNT:uint = 0;
+		
+		protected var _id:String;
+		protected var _data:*;
 		protected var _top:Number;
 		protected var _left:Number;
 		protected var _bottom:Number;
@@ -21,7 +24,13 @@ package com.as3nui.airkinect.extended.manager.regions {
 
 		protected var _kinectRegionPlanes:RegionPlanes;
 
-		public function Region(top:Number, left:Number, bottom:Number, right:Number, front:Number, back:Number) {
+
+		public function Region(top:Number, left:Number, bottom:Number, right:Number, front:Number, back:Number, id:String = null, data:* = null) {
+			_id = id ? id : "region_" + REGION_COUNT;
+			Region.REGION_COUNT++;
+
+			_data = data;
+			
 			this._top 		= top;
 			this._left 		= left;
 			this._bottom 	= bottom;
@@ -136,6 +145,18 @@ package com.as3nui.airkinect.extended.manager.regions {
 
 		public function set front(value:Number):void {
 			_front = value;
+		}
+
+		public function get data():* {
+			return _data;
+		}
+
+		public function set data(value:*):void {
+			_data = value;
+		}
+
+		public function get id():String {
+			return _id;
 		}
 	}
 }

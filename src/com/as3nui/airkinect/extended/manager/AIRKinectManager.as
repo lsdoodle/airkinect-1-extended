@@ -16,6 +16,7 @@ package com.as3nui.airkinect.extended.manager {
 
 	import flash.display.BitmapData;
 	import flash.geom.PerspectiveProjection;
+	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 
 	import org.osflash.signals.Signal;
@@ -115,7 +116,7 @@ package com.as3nui.airkinect.extended.manager {
 				_onSkeletonUpdate = new Signal(Skeleton);
 				_onSkeletonRemoved = new Signal(Skeleton);
 				_onRGBFrameUpdate = new Signal(BitmapData);
-				_onDepthFrameUpdate = new Signal(BitmapData);
+				_onDepthFrameUpdate = new Signal(BitmapData, ByteArray);
 				_onKinectDisconnected = new Signal();
 				_onKinectReconnected = new Signal(Boolean);
 
@@ -236,7 +237,7 @@ package com.as3nui.airkinect.extended.manager {
 		// Depth Frame
 		//----------------------------------
 		private function onDepthFrame(event:CameraFrameEvent):void {
-			_onDepthFrameUpdate.dispatch(event.frame.clone());
+			_onDepthFrameUpdate.dispatch(event.frame.clone(), event.data);
 			event.frame.dispose();
 		}
 
@@ -248,6 +249,7 @@ package com.as3nui.airkinect.extended.manager {
 			var skeletonIndex:String;
 			for (skeletonIndex in _skeletonLookup) {
 				if (_skeletonLookup[skeletonIndex] is Skeleton) {
+					_onSkeletonRemoved.dispatch((_skeletonLookup[skeletonIndex] as Skeleton));
 					(_skeletonLookup[skeletonIndex] as Skeleton).dispose();
 				}
 			}
