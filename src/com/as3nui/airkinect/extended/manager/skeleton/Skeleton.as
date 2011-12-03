@@ -11,8 +11,7 @@ package com.as3nui.airkinect.extended.manager.skeleton {
 	import flash.utils.Dictionary;
 
 	public class Skeleton {
-
-		public static const SKELETON_DATA_HISTORY_DEPTH:uint = 30;
+		public static var SKELETON_DATA_HISTORY_DEPTH:uint = 30;
 
 		private var _skeletonPositionsHistory:Vector.<SkeletonPosition>;
 		private var _currentSkeletonData:SkeletonPosition;

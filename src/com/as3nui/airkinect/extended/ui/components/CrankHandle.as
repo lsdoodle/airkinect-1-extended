@@ -162,7 +162,7 @@ package com.as3nui.airkinect.extended.ui.components {
 		private var _debugRadius:Number = 50;
 		private var _debugAngleConvert:Number = 180 / Math.PI;
 
-		function onDebugMove():void{
+		private function onDebugMove():void{
 			_debugArrow.x = _debugRadius * Math.cos(_currentRadians);
 			_debugArrow.y = _debugRadius * Math.sin(_currentRadians);
 			_debugArrow.rotation = _debugAngleConvert * _currentRadians + 90;
