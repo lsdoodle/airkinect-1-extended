@@ -8,6 +8,8 @@ package com.as3nui.airkinect.extended.ui.components {
 	import com.as3nui.airkinect.extended.ui.events.UIEvent;
 
 	import flash.display.DisplayObject;
+
+	import flash.display.DisplayObject;
 	import flash.display.Graphics;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -16,7 +18,7 @@ package com.as3nui.airkinect.extended.ui.components {
 	public class CrankHandle extends Handle {
 		protected var _rotator:DisplayObject;
 		protected var _rotatorCaptureArea:Sprite;
-		protected var _rotatorCapturePadding:Number = 400;
+		protected var _rotatorCapturePadding:Number;
 		protected var _lastGlobalCursorPosition:Point = new Point();
 		
 		//Rotation in Radians of the current frame
@@ -34,10 +36,11 @@ package com.as3nui.airkinect.extended.ui.components {
 		//determines is this is the FIRST update of movement in a rotation;
 		private var _isFirstUpdate:Boolean;
 
-		public function CrankHandle(icon:DisplayObject, rotator:DisplayObject, selectedIcon:DisplayObject = null, minPull:Number = .1, maxPull:Number = 1){
-			super(icon, selectedIcon, minPull, maxPull);
+		public function CrankHandle(icon:DisplayObject, rotator:DisplayObject, selectedIcon:DisplayObject = null, disabledIcon:DisplayObject = null, rotatorCapturePadding:Number = 400, capturePadding:Number = .45, minPull:Number = .1, maxPull:Number = 1){
+			super(icon, selectedIcon, disabledIcon, capturePadding, minPull, maxPull);
 			_rotator = rotator;
 			_rotatorCaptureArea = new Sprite();
+			_rotatorCapturePadding = rotatorCapturePadding;
 		}
 
 		override protected function onAddedToStage():void {

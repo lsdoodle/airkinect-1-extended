@@ -47,7 +47,8 @@ package com.as3nui.airkinect.extended.ui.objects {
 		public function Cursor(source:String, id:uint, icon:DisplayObject, easing:Number = .3) {
 			_source = source;
 			_id = id;
-			_enabled = true;
+			_visible = _enabled = true;
+
 
 			_icon = icon;
 			_isInteractive = true;

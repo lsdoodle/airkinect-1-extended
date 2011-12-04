@@ -10,6 +10,8 @@ package com.as3nui.airkinect.extended.ui.components {
 	import com.as3nui.airkinect.extended.ui.events.UIEvent;
 
 	import flash.display.DisplayObject;
+
+	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.geom.Point;
 
@@ -31,8 +33,8 @@ package com.as3nui.airkinect.extended.ui.components {
 		protected var _trackCapturePadding:Number = .25;
 
 
-		public function SlideHandle(icon:DisplayObject, track:DisplayObject, selectedIcon:DisplayObject = null, orientation:String = LEFT, minPull:Number = .1, maxPull:Number = 1) {
-			super(icon, selectedIcon, minPull, maxPull);
+		public function SlideHandle(icon:DisplayObject, track:DisplayObject, selectedIcon:DisplayObject = null, disabledIcon:DisplayObject = null, orientation:String = LEFT, capturePadding:Number = .45, minPull:Number = .1, maxPull:Number = 1) {
+			super(icon, selectedIcon, disabledIcon, capturePadding, minPull, maxPull);
 			_track = track;
 			_orientation = orientation;
 
@@ -92,10 +94,12 @@ package com.as3nui.airkinect.extended.ui.components {
 		}
 
 		override protected function onHandleRelease():void {
+			var globalPosition:Point = this.localToGlobal(_centerPoint);
+			this.dispatchEvent(new UIEvent(UIEvent.MOVE, _cursor, 0,0, globalPosition.x,  globalPosition.y,0));
+
 			super.onHandleRelease();
 			releaseIcon();
 			hideTrack();
-			this.removeEventListener(CursorEvent.MOVE, onCursorMove);
 		}
 
 		private function releaseIcon():void {
@@ -104,35 +108,43 @@ package com.as3nui.airkinect.extended.ui.components {
 		}
 
 		protected function onCursorMove(event:CursorEvent):void {
+			if(!_cursor) return;
+
 			if (!_slideStartPosition) _slideStartPosition = new Point(event.localX, event.localY);
 			_currentCursorPosition.x = event.localX;
 			_currentCursorPosition.y = event.localY;
-
+			var progress:Number = 0;
 			var trackEnd:Number;
+
 			if (_orientation == RIGHT) {
 				_icon.x = _currentCursorPosition.x - _slideStartPosition.x;
 				if (_icon.x < 0) _icon.x = 0;
 				trackEnd = _track.width - _icon.width - _trackEndPadding;
+				progress = Math.abs(_icon.x / trackEnd);
 				if (_icon.x >= trackEnd) onSelected()
 			} else if (_orientation == LEFT) {
 				_icon.x = _currentCursorPosition.x - _slideStartPosition.x;
 				if (_icon.x > 0) _icon.x = 0;
 				trackEnd = -_track.width + _track.x + _trackEndPadding;
+				progress = Math.abs(_icon.x / trackEnd);
 				if (_icon.x <= trackEnd) onSelected()
 			} else if (_orientation == UP) {
 				_icon.y = _currentCursorPosition.y - _slideStartPosition.y;
 				if (_icon.y > 0) _icon.y = 0;
 
 				trackEnd = -_track.height + _track.y + _trackEndPadding;
+				progress = Math.abs(_icon.y / trackEnd);
 				if (_icon.y <= trackEnd) onSelected()
 			} else if (_orientation == DOWN) {
 				_icon.y = _currentCursorPosition.y - _slideStartPosition.y;
 				if (_icon.y < 0) _icon.y = 0;
 				trackEnd = _track.height - _icon.height - _trackEndPadding;
+				progress = Math.abs(_icon.y / trackEnd);
 				if (_icon.y >= trackEnd) onSelected()
 			}
 
-			this.dispatchEvent(new UIEvent(UIEvent.MOVE, event.cursor, event.localX, event.localY, event.stageX, event.stageY));
+			if(!_cursor) return;
+			this.dispatchEvent(new UIEvent(UIEvent.MOVE, event.cursor, event.localX, event.localY, event.stageX, event.stageY, progress));
 		}
 
 		protected function onSelected():void {

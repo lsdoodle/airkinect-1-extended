@@ -26,10 +26,12 @@ package com.as3nui.airkinect.extended.ui.components {
 		
 		protected var _selectedIcon:DisplayObject;
 
+		protected var _disabledIcon:DisplayObject;
+
 		protected var _maxPull:Number;
 		protected var _minPull:Number;
 
-		protected var _capturePadding:Number = .45;
+		protected var _capturePadding:Number
 		protected var _captureArea:Shape;
 		protected var _showCaptureArea:Boolean;
 
@@ -37,12 +39,14 @@ package com.as3nui.airkinect.extended.ui.components {
 		protected var _globalCursorPosition:Point = new Point();
 		protected var _localCursorPosition:Point = new Point();
 		
-		public function Handle(icon:DisplayObject, selectedIcon:DisplayObject = null, minPull:Number = .1, maxPull:Number = 1){
+		public function Handle(icon:DisplayObject, selectedIcon:DisplayObject = null, disabledIcon:DisplayObject = null, capturePadding:Number = .45, minPull:Number = .1, maxPull:Number = 1){
 			_idleIcon = _icon = icon;
 			_selectedIcon = selectedIcon;
+			_disabledIcon = disabledIcon;
 			super();
 
 			_captureArea = new Shape();
+			_capturePadding = capturePadding;
 			_minPull = minPull;
 			_maxPull = maxPull;
 		}
@@ -147,7 +151,23 @@ package com.as3nui.airkinect.extended.ui.components {
 
 		}
 
-		//----------------------------------
+		override public function set enabled(value:Boolean):void {
+			super.enabled = value;
+			if(_enabled){
+				if(_idleIcon != _icon){
+					if(this.contains(_icon)) this.removeChild(_icon);
+					_icon = _idleIcon;
+					this.addChild(_icon);
+				}
+			}else if(_disabledIcon){
+				if(_cursor) release(_cursor);
+				if(this.contains(_icon)) this.removeChild(_icon);
+				_icon = _disabledIcon;
+				this.addChild(_icon);
+			}
+		}
+
+//----------------------------------
 		// IAttractor
 		//----------------------------------
 		public function get captureHost():ICaptureHost {

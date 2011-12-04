@@ -238,13 +238,19 @@ package com.as3nui.airkinect.extended.ui.managers {
 			while(targets.length > 0) {
 				item = targets.pop() as DisplayObject;
 
+				//If this component is disabled skip it.
+				if(item is IUIComponent && (!(item as IUIComponent).enabled)) continue;
+				
 				if ((item is InteractiveObject && (item as InteractiveObject).mouseEnabled && (item is Stage || _components.indexOf(item) >=0 || (item is IUIComponent)))) {
 					return item as InteractiveObject;
 				}else if(PARENT_SEARCH_ENABLED){
 					var currentObject:DisplayObject = item.parent;
+
 					while(currentObject && !(currentObject is Stage)){
-						if (currentObject is InteractiveObject && (currentObject as InteractiveObject).mouseEnabled && (_components.indexOf(currentObject) >=0 || (currentObject is IUIComponent))) {
-							return currentObject as InteractiveObject;
+						if((currentObject is InteractiveObject && (currentObject as InteractiveObject).mouseEnabled && (_components.indexOf(currentObject) >=0 || (currentObject is IUIComponent)))) {
+							if(!(currentObject is IUIComponent) || ((currentObject is IUIComponent) && (currentObject as IUIComponent).enabled)) {
+								return currentObject as InteractiveObject;
+							}
 						}
 						currentObject = currentObject.parent;
 					}
