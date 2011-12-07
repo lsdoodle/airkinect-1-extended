@@ -13,32 +13,67 @@ package com.as3nui.airkinect.extended.ui.helpers {
 	import flash.ui.Mouse;
 
 	public class MouseSimulator {
-		protected var _stage:Stage;
-		protected var _source:String = "mouse_adapter";
-		protected var _hasBeenAdded:Boolean;
-		protected var _mouseCursor:Cursor;
-		
-		public function MouseSimulator(stage:Stage) {
+		protected static var _stage:Stage;
+		protected static var _source:String = "mouse_adapter";
+		protected static var _hasBeenAdded:Boolean;
+		protected static var _mouseCursor:Cursor;
+		protected static var _enabled:Boolean;
+
+		public static function init(stage:Stage):void {
 			_stage = stage;
 			_hasBeenAdded = false;
-
 			_mouseCursor = new Cursor("_mouse_", 1, new MouseGraphic());
-			_stage.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
+			enable();
+		}
 
+		public static function uninit():void {
+			disable();
+			_stage = null;
+			_mouseCursor = null;
+		}
+
+		public static function enable():void {
+			if(_enabled) return;
+
+			_enabled = true;
 			Mouse.hide();
+			_stage.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
 			if(UIManager.isInitialized) addMouseCursor();
 		}
 
-		private function handleMouseMove(event:MouseEvent):void {
+		public static function disable():void {
+			if(!_enabled) return;
+			_enabled = false;
+
+			Mouse.show();
+			_stage.removeEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
+			if(UIManager.isInitialized) removeMouseCursor();
+		}
+
+		private static function handleMouseMove(event:MouseEvent):void {
 			_mouseCursor.x = event.stageX / _stage.stageWidth;
 			_mouseCursor.y = event.stageY / _stage.stageHeight;
 
 			if(UIManager.isInitialized && !_hasBeenAdded) addMouseCursor();
 		}
 
-		private function addMouseCursor():void {
+		private static function addMouseCursor():void {
 			 UIManager.addCursor(_mouseCursor);
 			_hasBeenAdded = true;
+		}
+
+		private static function removeMouseCursor():void {
+			UIManager.removeCursor(_mouseCursor);
+			_hasBeenAdded = false;
+		}
+
+
+		public static function get isInitialized():Boolean {
+			return !(_stage == null);
+		}
+
+		public static function get enabled():Boolean {
+			return _enabled;
 		}
 	}
 }

@@ -63,6 +63,10 @@ package com.as3nui.airkinect.extended.ui.managers {
 			instance.customObjectFilter = value;
 		}
 
+		public static function get cursorContainer():Sprite {
+			return instance.cursorContainer;
+		}
+
 		//----------------------------------
 		// Instance
 		//----------------------------------
@@ -112,7 +116,7 @@ package com.as3nui.airkinect.extended.ui.managers {
 
 			if(!_targetLookup[cursor.source]) _targetLookup[cursor.source] = new Dictionary();
 			//Cursor Removed dispatch out for any objects it is over
-			if(_targetLookup[cursor.source][cursor.id]) {
+			if(_targetLookup[cursor.source][cursor.id] is InteractiveObject) {
 				//Convert InputPoint coords into stage coords
 				_inputPoint.x = cursor.x * _stage.stageWidth;
 				_inputPoint.y = cursor.y * _stage.stageHeight;
@@ -122,19 +126,40 @@ package com.as3nui.airkinect.extended.ui.managers {
 				cursorPoint.x *= _stage.stageWidth;
 				cursorPoint.y *= _stage.stageHeight;
 				
-				var targetObject:InteractiveObject = getInteractiveObjectUnderPoint(cursorPoint);
+				var targetObject:InteractiveObject = _targetLookup[cursor.source][cursor.id] as InteractiveObject;
 				var localPoint:Point = targetObject.globalToLocal(cursorPoint);
 
 				//Dispatch OUT
 				(_targetLookup[cursor.source][cursor.id] as InteractiveObject).dispatchEvent(new CursorEvent(CursorEvent.OUT, cursor,  targetObject, localPoint.x,  localPoint.y,  _inputPoint.x,  _inputPoint.y));
+				_targetLookup[cursor.source][cursor.id]  = _stage;
 			}
 
 			if(_cursorContainer.contains(cursor.icon)) _cursorContainer.removeChild(cursor.icon);
 		}
 
 		public function onPulse(event:Event):void {
+			var cursorPoint:Point;
+			var targetObject:InteractiveObject;
+			var localPoint:Point;
 			for each(var cursor:Cursor in this._cursors){
-				if(!cursor.enabled) continue;
+
+				if(!cursor.enabled) {
+					if(!_targetLookup[cursor.source]) _targetLookup[cursor.source] = new Dictionary();
+					if(_targetLookup[cursor.source][cursor.id] is InteractiveObject) {
+						// Interactive Object under the current Input Point
+						cursorPoint = cursor.toPoint();
+						cursorPoint.x *= _stage.stageWidth;
+						cursorPoint.y *= _stage.stageHeight;
+
+						targetObject = _targetLookup[cursor.source][cursor.id] as InteractiveObject;
+						localPoint = targetObject.globalToLocal(cursorPoint);
+
+						//Dispatch OUT
+						(_targetLookup[cursor.source][cursor.id] as InteractiveObject).dispatchEvent(new CursorEvent(CursorEvent.OUT, cursor,  targetObject, localPoint.x,  localPoint.y,  _inputPoint.x,  _inputPoint.y));
+						_targetLookup[cursor.source][cursor.id]  = _stage;
+					}
+					continue;
+				}
 
 				//Convert InputPoint coords into stage coords
 				_inputPoint.x = cursor.x * _stage.stageWidth;
@@ -175,11 +200,11 @@ package com.as3nui.airkinect.extended.ui.managers {
 				cursor.icon.y += cursor.yVelocity;
 
 				// Interactive Object under the current Input Point
-				var cursorPoint:Point = cursor.toPoint();
+				cursorPoint = cursor.toPoint();
 				cursorPoint.x *= _stage.stageWidth;
 				cursorPoint.y *= _stage.stageHeight;
-				var targetObject:InteractiveObject = getInteractiveObjectUnderPoint(cursorPoint);
-				var localPoint:Point = targetObject.globalToLocal(cursorPoint);
+				targetObject = getInteractiveObjectUnderPoint(cursorPoint);
+				localPoint = targetObject.globalToLocal(cursorPoint);
 
 				if(!_targetLookup[cursor.source]) _targetLookup[cursor.source] = new Dictionary();
 
@@ -265,6 +290,10 @@ package com.as3nui.airkinect.extended.ui.managers {
 
 		public function set customObjectFilter(value:Function):void {
 			_customObjectFilter = value;
+		}
+
+		public function get cursorContainer():Sprite {
+			return _cursorContainer;
 		}
 	}
 }

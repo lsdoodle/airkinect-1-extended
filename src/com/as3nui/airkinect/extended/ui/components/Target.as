@@ -8,6 +8,7 @@ package com.as3nui.airkinect.extended.ui.components {
 	import com.as3nui.airkinect.extended.ui.display.BaseSelectionTimer;
 	import com.as3nui.airkinect.extended.ui.events.CursorEvent;
 	import com.as3nui.airkinect.extended.ui.events.UIEvent;
+	import com.as3nui.airkinect.extended.ui.managers.UIManager;
 	import com.as3nui.airkinect.extended.ui.objects.Cursor;
 
 	import flash.display.DisplayObject;
@@ -43,17 +44,17 @@ package com.as3nui.airkinect.extended.ui.components {
 			startSelectionTimer();
 		}
 
-		override protected  function onCursorOut(event:CursorEvent):void {
+		override protected function onCursorOut(event:CursorEvent):void {
 			super.onCursorOut(event);
 			_cursor.visible = true;
 			_cursor = null;
 
-			if (this.contains(_selectionTimer)) this.removeChild(_selectionTimer);
+			if (UIManager.cursorContainer.contains(_selectionTimer)) UIManager.cursorContainer.removeChild(_selectionTimer);
 			this.removeEventListener(Event.ENTER_FRAME, onSelectionTimeUpdate);
 		}
 
 		protected function startSelectionTimer():void {
-			this.addChild(_selectionTimer);
+			UIManager.cursorContainer.addChild(_selectionTimer);
 			_selectionTimer.onProgress(0);
 
 			_selectionStartTimer = getTimer();
@@ -64,10 +65,10 @@ package com.as3nui.airkinect.extended.ui.components {
 		protected function onSelectionTimeUpdate(event:Event):void {
 			_globalCursorPosition.x = _cursor.x * stage.stageWidth;
 			_globalCursorPosition.y = _cursor.y * stage.stageHeight;
-			_localCursorPosition = this.globalToLocal(_globalCursorPosition);
+			_localCursorPosition = UIManager.cursorContainer.globalToLocal(_globalCursorPosition);
 
-			_selectionTimer.x = _localCursorPosition.x;
-			_selectionTimer.y = _localCursorPosition.y;
+			_selectionTimer.x = _localCursorPosition.x - (_selectionTimer.width / 2);
+			_selectionTimer.y = _localCursorPosition.y - (_selectionTimer.height / 2);
 
 			var progress:Number = (getTimer() - _selectionStartTimer) / (_selectionDelay * 1000);
 			_selectionTimer.onProgress(progress);
@@ -75,7 +76,7 @@ package com.as3nui.airkinect.extended.ui.components {
 		}
 
 		protected function onSelected():void {
-			if (this.contains(_selectionTimer)) this.removeChild(_selectionTimer);
+			if (UIManager.cursorContainer.contains(_selectionTimer)) UIManager.cursorContainer.removeChild(_selectionTimer);
 			this.removeEventListener(Event.ENTER_FRAME, onSelectionTimeUpdate);
 			_cursor.visible = true;
 
