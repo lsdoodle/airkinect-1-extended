@@ -4,7 +4,7 @@
  * Date: 12/6/11
  * Time: 4:39 PM
  */
-package com.as3nui.airkinect.extended.recorder {
+package com.as3nui.airkinect.extended.simulator {
 	import com.as3nui.nativeExtensions.kinect.data.SkeletonFrame;
 	import com.as3nui.nativeExtensions.kinect.data.SkeletonPosition;
 	import com.as3nui.nativeExtensions.kinect.events.SkeletonFrameEvent;
@@ -69,6 +69,11 @@ package com.as3nui.airkinect.extended.recorder {
 			this.dispatchEvent(new SkeletonFrameEvent(skeletonFrame));
 		}
 
+		public function clear():void {
+			if(this.playing) stop();
+			_currentXML = null;
+		}
+
 		private function onUpdate(event:Event):void {
 			if (!_currentXML) return;
 			if (getTimer() > _lastDispatchedTime + _delay) {
@@ -124,6 +129,5 @@ package com.as3nui.airkinect.extended.recorder {
 		public function get stopped():Boolean {
 			return _state == STOPPED;
 		}
-
 	}
 }

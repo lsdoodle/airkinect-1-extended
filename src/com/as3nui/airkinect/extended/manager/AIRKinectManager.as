@@ -119,8 +119,12 @@ package com.as3nui.airkinect.extended.manager {
 		}
 
 		public function initialize(flags:uint = DEFAULT_FLAGS):Boolean {
-			var success:Boolean = AIRKinect.initialize(flags);
-			if (success && !_isInitialized) {
+			var success:Boolean = true;
+
+			if (!_isInitialized) {
+				_currentFlags = flags;
+				success = AIRKinect.initialize(flags);
+
 				_skeletonLookup = new Dictionary();
 				_onSkeletonAdded = new Signal(Skeleton);
 				_onSkeletonUpdate = new Signal(Skeleton);
@@ -129,17 +133,15 @@ package com.as3nui.airkinect.extended.manager {
 				_onDepthFrameUpdate = new Signal(BitmapData, ByteArray);
 				_onKinectDisconnected = new Signal();
 				_onKinectReconnected = new Signal(Boolean);
-
 				AIRKinect.addEventListener(SkeletonFrameEvent.UPDATE, onSkeletonFrame);
 				AIRKinect.addEventListener(CameraFrameEvent.RGB, onRGBFrame);
 				AIRKinect.addEventListener(CameraFrameEvent.DEPTH, onDepthFrame);
 
 				AIRKinect.addEventListener(DeviceStatusEvent.RECONNECTED, onKinectReconnection);
 				AIRKinect.addEventListener(DeviceStatusEvent.DISCONNECTED, onKinectDisconnection);
-
-				_currentFlags = flags;
 				_isInitialized = true;
 			}
+
 			return success;
 		}
 
@@ -147,13 +149,13 @@ package com.as3nui.airkinect.extended.manager {
 		 * Dispose Memory used by Kinect Manager and Kinect Extension
 		 */
 		public function shutdown():void {
-			if(_onSkeletonAdded) _onSkeletonAdded.removeAll();
-			if(_onSkeletonUpdate) _onSkeletonUpdate.removeAll();
-			if(_onSkeletonRemoved) _onSkeletonRemoved.removeAll();
-			if(_onRGBFrameUpdate) _onRGBFrameUpdate.removeAll();
-			if(_onDepthFrameUpdate) _onDepthFrameUpdate.removeAll();
-			if(_onKinectDisconnected) _onKinectDisconnected.removeAll();
-			if(_onKinectReconnected) _onKinectReconnected.removeAll();
+			if (_onSkeletonAdded) _onSkeletonAdded.removeAll();
+			if (_onSkeletonUpdate) _onSkeletonUpdate.removeAll();
+			if (_onSkeletonRemoved) _onSkeletonRemoved.removeAll();
+			if (_onRGBFrameUpdate) _onRGBFrameUpdate.removeAll();
+			if (_onDepthFrameUpdate) _onDepthFrameUpdate.removeAll();
+			if (_onKinectDisconnected) _onKinectDisconnected.removeAll();
+			if (_onKinectReconnected) _onKinectReconnected.removeAll();
 			cleanupSkeletons();
 
 			AIRKinect.removeEventListener(SkeletonFrameEvent.UPDATE, onSkeletonFrame);
@@ -164,15 +166,15 @@ package com.as3nui.airkinect.extended.manager {
 			_currentFlags = 0;
 			_isInitialized = false;
 
-			if(_skeletonDispatchers) {
-				for each(var eventDispatcher:EventDispatcher in _skeletonDispatchers){
+			if (_skeletonDispatchers) {
+				for each(var eventDispatcher:EventDispatcher in _skeletonDispatchers) {
 					eventDispatcher.removeEventListener(SkeletonFrameEvent.UPDATE, onSkeletonFrame);
 				}
 				_skeletonDispatchers = null;
 			}
 		}
 
-		protected function cleanupSkeletons():void{
+		protected function cleanupSkeletons():void {
 			var skeletonIndex:String;
 			var dispatcher:Object;
 			for (dispatcher in _skeletonLookup) {
@@ -188,12 +190,14 @@ package com.as3nui.airkinect.extended.manager {
 		// Skeleton Frame
 		//----------------------------------
 		protected function onSkeletonFrame(e:SkeletonFrameEvent):void {
+			if (!_isInitialized) return;
+
 			var skeletonFrame:SkeletonFrame = e.skeletonFrame;
 			var skeletonPosition:SkeletonPosition;
 			var skeleton:Skeleton;
 			var trackedSkeletonIDs:Vector.<uint> = new Vector.<uint>();
-			
-			if(!_skeletonLookup[e.target]) _skeletonLookup[e.target] = new Dictionary();
+
+			if (!_skeletonLookup[e.target]) _skeletonLookup[e.target] = new Dictionary();
 
 			if (skeletonFrame.numSkeletons > 0) {
 				for (var j:uint = 0; j < skeletonFrame.numSkeletons; j++) {
@@ -290,7 +294,7 @@ package com.as3nui.airkinect.extended.manager {
 			trace("Kinect Manager :: Reconnection");
 			_onKinectReconnected.dispatch(AIRKinect.initialize(_currentFlags));
 		}
-		
+
 		//----------------------------------
 		// Kinect Angle
 		//----------------------------------
@@ -306,8 +310,8 @@ package com.as3nui.airkinect.extended.manager {
 		// Adding other Skeleton Dispatcher (used for XML playback)
 		//----------------------------------
 		public function addSkeletonDispatcher(dispatcher:EventDispatcher):void {
-			if(!_skeletonDispatchers) _skeletonDispatchers = new <EventDispatcher>[];
-			
+			if (!_skeletonDispatchers) _skeletonDispatchers = new <EventDispatcher>[];
+
 			dispatcher.addEventListener(SkeletonFrameEvent.UPDATE, onSkeletonFrame);
 			_skeletonDispatchers.push(dispatcher)
 		}
@@ -315,9 +319,9 @@ package com.as3nui.airkinect.extended.manager {
 		public function removeSkeletonDispatcher(dispatcher:EventDispatcher):void {
 			dispatcher.removeEventListener(SkeletonFrameEvent.UPDATE, onSkeletonFrame);
 
-			if(_skeletonDispatchers) {
+			if (_skeletonDispatchers) {
 				var index:int = _skeletonDispatchers.indexOf(dispatcher);
-				if(index >= 0) _skeletonDispatchers.splice(index, 1);
+				if (index >= 0) _skeletonDispatchers.splice(index, 1);
 				var skeletonIndex:String;
 				for (skeletonIndex in _skeletonLookup[dispatcher]) {
 					if (_skeletonLookup[dispatcher][skeletonIndex] is Skeleton) {

@@ -4,7 +4,7 @@
  * Date: 12/6/11
  * Time: 2:19 PM
  */
-package com.as3nui.airkinect.extended.recorder {
+package com.as3nui.airkinect.extended.simulator {
 	import com.as3nui.nativeExtensions.kinect.AIRKinect;
 	import com.as3nui.nativeExtensions.kinect.data.SkeletonFrame;
 	import com.as3nui.nativeExtensions.kinect.data.SkeletonPosition;
