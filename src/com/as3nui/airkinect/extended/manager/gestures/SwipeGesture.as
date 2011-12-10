@@ -13,6 +13,10 @@ package com.as3nui.airkinect.extended.manager.gestures {
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
 
+	/**
+	 * Swipe gesture is defined as a element moving over a set velocity in some direction
+	 * and then falling below another velocity. Swipes can be in any direction in space (left, right, forward back, up, down)
+	 */
 	public class SwipeGesture extends AbstractKinectGesture {
 		public static var DISPATCH_DELAY:uint = 1000;
 		public static var LAST_DISPATCHED_LOOKUP:Dictionary = new Dictionary();

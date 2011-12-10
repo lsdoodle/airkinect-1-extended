@@ -10,6 +10,19 @@ package com.as3nui.airkinect.extended.manager.gestures {
 	import flash.display.Sprite;
 	import flash.events.Event;
 
+	/**
+	 * Gesture Managers handles updating gestures through the different states,
+	 * Gestures are added and removed to this Singleton to be updated on EnterFrame.
+	 * For exmaple
+	 * <p>
+	 * <code>
+	 * 		var leftSwipeGesture:SwipeGesture = new SwipeGesture(skeleton, SkeletonPosition.HAND_LEFT, null, true, false, false);
+	 *		AIRKinectGestureManager.addGesture(leftSwipeGesture);
+	 * </code>
+	 * </p>
+	 *
+	 *
+	*/
 	public class AIRKinectGestureManager {
 		private static var _instance:AIRKinectGestureManager;
 
@@ -19,18 +32,35 @@ package com.as3nui.airkinect.extended.manager.gestures {
 			return _instance;
 		}
 
+		/**
+		 * Cleanup Manager removes eneter frame and cleans up lookups
+		 */
 		public static function dispose():void {
 			instance.dispose();
 		}
 
+		/**
+		 * Add a gesture to the manager
+		 * @param gesture		Gesture to add
+		 */
 		public static function addGesture(gesture:IKinectGesture):void {
 			instance.addGesture(gesture);
 		}
 
+		/**
+		 * Removes a gesture from the manager
+		 * @param gesture		Gesture to remove
+		 * @return				Index of gesture removed
+		 */
 		public static function removeGesture(gesture:IKinectGesture):int {
 			return instance.removeGesture(gesture);
 		}
 
+		/**
+		 * Removes all gestures from the manager for a specific skeleton
+		 * @param skeleton		Skeleton to remove gestures of
+		 * @return				Number of gestures removed from the skeleton
+		 */
 		public static function removeAllGestures(skeleton:Skeleton):uint {
 			return instance.removeAllGestures(skeleton);
 		}
@@ -38,41 +68,60 @@ package com.as3nui.airkinect.extended.manager.gestures {
 
 		protected var _pulseSprite:Sprite;
 		protected var _gestures:Array;
-		
+
+		/**
+		 * Gesture Manager is a singleton and should not be created as a instance
+		 */
 		public function AIRKinectGestureManager() {
 			_pulseSprite = new Sprite();
 			this._gestures = new Array();
 		}
 
+		/**
+		 * Disposes all memory and cleans up enterframe
+		 */
 		public function dispose():void {
 			this._gestures = null;
 			_pulseSprite.removeEventListener(Event.ENTER_FRAME, onPulse);
 		}
 
-		//----------------------------------
-		// Pulse Functions
-		//----------------------------------
+		/**
+		 * Starts the enterframe management
+		 */
 		private function initPulse():void {
 			_pulseSprite.addEventListener(Event.ENTER_FRAME, onPulse);
 		}
 
+		/**
+		 * Removes enter frame management
+		 */
 		private function removePulse():void {
 			_pulseSprite.removeEventListener(Event.ENTER_FRAME, onPulse);
 		}
 
+		/**
+		 * Enter Frame pulse
+		 * @param event		eneter frame event
+		 */
 		private function onPulse(event:Event):void {
 			updateGestures();
 		}
 
-		//----------------------------------
-		// Kinect Gesture Management
-		//----------------------------------
+		/**
+		 * Adds a gesture to the manager to be tracked and process through different States.
+		 * @param gesture		Gesture to add
+		 */
 		public function addGesture(gesture:IKinectGesture):void {
 			if (!_pulseSprite.hasEventListener(Event.ENTER_FRAME)) initPulse();
 			this._gestures.push(gesture);
 			this._gestures.sortOn("priority", Array.NUMERIC);
 		}
 
+		/**
+		 * Removes a gesture from the manager. Gesture will no longer be processed
+		 * @param gesture Gesture to remove
+		 * @return	index of removed gesture
+		 */
 		public function removeGesture(gesture:IKinectGesture):int {
 			var index:int = this._gestures.indexOf(gesture);
 			if (index >= 0) {
@@ -84,6 +133,12 @@ package com.as3nui.airkinect.extended.manager.gestures {
 			return index;
 		}
 
+		/**
+		 * Removes all gestures that are on a skeleton from the manager.
+		 * Useful when a skeleton is removed
+		 * @param skeleton		Skeleton to remove gesture from
+		 * @return				Number of gestures removed
+		 */
 		public function removeAllGestures(skeleton:Skeleton):uint {
 			var remainingGestures:Array = [];
 			var count:uint = 0;
@@ -100,6 +155,9 @@ package com.as3nui.airkinect.extended.manager.gestures {
 			return count;
 		}
 
+		/**
+		 * updates the gestures through the different gesture states
+		 */
 		private function updateGestures():void {
 			var skeletonsWithGestures:Vector.<Skeleton> = new Vector.<Skeleton>();
 			var executedGesturePriority:uint = 0;

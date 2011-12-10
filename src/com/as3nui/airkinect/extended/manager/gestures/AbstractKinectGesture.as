@@ -12,6 +12,10 @@ package com.as3nui.airkinect.extended.manager.gestures {
 
 	import org.osflash.signals.Signal;
 
+	/**
+	 * Base class for Gestures to build off of. Provides all signals needed to dispatched
+	 * Region support and function structure for creating gestures
+	 */
 	public class AbstractKinectGesture implements IKinectGesture {
 		protected var _onGestureBegin:Signal;
 		protected var _onGestureProgress:Signal;

@@ -5,6 +5,10 @@
  * Time: 5:53 PM
  */
 package com.as3nui.airkinect.extended.manager.gestures {
+
+	/**
+	 * Different states a gesture can go through
+	 */
 	public class GestureState {
 		public static const GESTURE_IDLE:String 		= "idle";
 		public static const GESTURE_STARTED:String 		= "started";

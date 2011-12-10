@@ -10,6 +10,10 @@ package com.as3nui.airkinect.extended.manager.gestures {
 
 	import org.osflash.signals.Signal;
 
+	/**
+	 * Interface used for all gestures. If one is looking to create a gesture form scratch they must implement this
+	 * interface though it is recommended to extend AbstractKinectGesture
+	 */
 	public interface IKinectGesture {
 		function dispose():void;
 
