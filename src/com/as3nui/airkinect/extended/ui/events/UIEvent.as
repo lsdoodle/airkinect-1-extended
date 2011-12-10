@@ -3,13 +3,40 @@ package com.as3nui.airkinect.extended.ui.events {
 
 	import flash.events.Event;
 
+	/**
+	 * UIEvent is dispatched from a component should be used to listen for needed events
+	 * on all components in the libraru
+	 */
 	public class UIEvent extends Event {
-		public static const OVER:String		= "com.as3nui.airkinect.extended.ui.components.events.OVER"; //
-		public static const OUT:String 		= "com.as3nui.airkinect.extended.ui.components.events.OUT"; //
-		public static const CAPTURE:String 	= "com.as3nui.airkinect.extended.ui.components.events.CAPTURE"; //
-		public static const RELEASE:String 	= "com.as3nui.airkinect.extended.ui.components.events.RELEASE"; //
+		/**
+		 * Over Event dispatched whena cursor moves over a component
+		 */
+		public static const OVER:String = "com.as3nui.airkinect.extended.ui.components.events.OVER"; //
+
+		/**
+		 * Out Event dispatched when cursor moves out of a component
+		 */
+		public static const OUT:String = "com.as3nui.airkinect.extended.ui.components.events.OUT"; //
+
+		/**
+		 * Capture event is dispatched when a component captures the cursor
+		 */
+		public static const CAPTURE:String = "com.as3nui.airkinect.extended.ui.components.events.CAPTURE"; //
+
+		/**
+		 * Release event is dispatched when a component releases the cursor
+		 */
+		public static const RELEASE:String = "com.as3nui.airkinect.extended.ui.components.events.RELEASE"; //
+
+		/**
+		 * Selected event is dispatched when a component is selected
+		 */
 		public static const SELECTED:String = "com.as3nui.airkinect.extended.ui.components.events.SELECTED"; //
-		public static const MOVE:String 	= "com.as3nui.airkinect.extended.ui.components.events.MOVE"; //
+
+		/**
+		 * Move event is dispatched when the cursor moves ontop of a component
+		 */
+		public static const MOVE:String = "com.as3nui.airkinect.extended.ui.components.events.MOVE"; //
 
 		private var _localX:Number = 0;
 		private var _localY:Number = 0;
@@ -19,6 +46,17 @@ package com.as3nui.airkinect.extended.ui.events {
 		private var _delta:Number = 0;
 		private var _cursor:Cursor;
 
+		/**
+		 * UIEvent will be dispatched from a component
+		 * @param type			Type of event
+		 * @param cursor		Cursor event was triggered by
+		 * @param localX		localX position of cursor inside currentTarget
+		 * @param localY		localY position of cursor inside currentTarget
+		 * @param stageX		stageX position of cursor
+		 * @param stageY		stageY position of cursor
+		 * @param value			value is used optionally. Available, for example, on move event of crank slider to tell the current value of the move
+		 * @param delta			delta is used optionally. Avaliable, for exmaple, on move event of crank slider to tell the change in rotation.
+		 */
 		public function UIEvent(type:String, cursor:Cursor, localX:Number, localY:Number, stageX:Number, stageY:Number, value:Number = 0, delta:Number = 0) {
 			super(type);
 

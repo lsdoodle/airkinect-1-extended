@@ -5,7 +5,7 @@
  * Time: 4:49 PM
  */
 package com.as3nui.airkinect.extended.ui.components {
-	import com.as3nui.airkinect.extended.ui.display.BaseSelectionTimer;
+	import com.as3nui.airkinect.extended.ui.display.BaseTimerSprite;
 	import com.as3nui.airkinect.extended.ui.events.CursorEvent;
 	import com.as3nui.airkinect.extended.ui.events.UIEvent;
 	import com.as3nui.airkinect.extended.ui.managers.UIManager;
@@ -21,12 +21,12 @@ package com.as3nui.airkinect.extended.ui.components {
 		protected var _localCursorPosition:Point = new Point();
 		protected var _cursor:Cursor;
 
-		protected var _selectionTimer:BaseSelectionTimer;
+		protected var _selectionTimer:BaseTimerSprite;
 		protected var _selectionStartTimer:int;
 		protected var _selectionDelay:uint;
 
 		
-		public function Target(icon:DisplayObject, selectionTimer:BaseSelectionTimer, disabledIcon:DisplayObject=null, selectionDelay:uint = 1){
+		public function Target(icon:DisplayObject, selectionTimer:BaseTimerSprite, disabledIcon:DisplayObject=null, selectionDelay:uint = 1){
 			super(icon, disabledIcon);
 			_selectionTimer = selectionTimer;
 			_selectionDelay = selectionDelay;

@@ -5,7 +5,7 @@
  * Time: 4:49 PM
  */
 package com.as3nui.airkinect.extended.ui.components {
-	import com.as3nui.airkinect.extended.ui.display.BaseSelectionTimer;
+	import com.as3nui.airkinect.extended.ui.display.BaseTimerSprite;
 	import com.as3nui.airkinect.extended.ui.events.UIEvent;
 
 	import flash.display.DisplayObject;
@@ -15,17 +15,17 @@ package com.as3nui.airkinect.extended.ui.components {
 
 	public class RepeatingSelectableHandle extends Handle {
 
-		protected var _selectionTimer:BaseSelectionTimer;
+		protected var _selectionTimer:BaseTimerSprite;
 		protected var _selectionStartTimer:int;
 		protected var _selectionDelay:uint;
 
 		//Repeat Delay timer
-		protected var _repeatTimer:BaseSelectionTimer;
+		protected var _repeatTimer:BaseTimerSprite;
 		protected var _repeatDelay:uint;
 		protected var _repeatStartTime:Number;
 
 
-		public function RepeatingSelectableHandle(icon:DisplayObject, selectionTimer:BaseSelectionTimer, repeatTimer:BaseSelectionTimer = null, selectedIcon:DisplayObject = null, disabledIcon:DisplayObject = null, selectionDelay:uint = 1, repeatDelay:uint = 1, capturePadding:Number = .45, minPull:Number = .1, maxPull:Number = 1) {
+		public function RepeatingSelectableHandle(icon:DisplayObject, selectionTimer:BaseTimerSprite, repeatTimer:BaseTimerSprite = null, selectedIcon:DisplayObject = null, disabledIcon:DisplayObject = null, selectionDelay:uint = 1, repeatDelay:uint = 1, capturePadding:Number = .45, minPull:Number = .1, maxPull:Number = 1) {
 			super(icon, selectedIcon, disabledIcon, capturePadding, minPull, maxPull);
 			_selectionDelay = selectionDelay;
 			_selectionTimer = selectionTimer;
