@@ -20,6 +20,7 @@ package com.as3nui.airkinect.extended.ui.helpers {
 		protected static var _enabled:Boolean;
 
 		public static function init(stage:Stage):void {
+			trace("Simulator Initialized");
 			_stage = stage;
 			_hasBeenAdded = false;
 			_mouseCursor = new Cursor("_mouse_", 1, new MouseGraphic());
@@ -28,8 +29,9 @@ package com.as3nui.airkinect.extended.ui.helpers {
 
 		public static function uninit():void {
 			disable();
-			_stage = null;
+			removeMouseCursor();
 			_mouseCursor = null;
+			_stage = null;
 		}
 
 		public static function enable():void {
@@ -58,12 +60,20 @@ package com.as3nui.airkinect.extended.ui.helpers {
 		}
 
 		private static function addMouseCursor():void {
-			 UIManager.addCursor(_mouseCursor);
-			_hasBeenAdded = true;
+			if(UIManager.isInitialized) {
+				_mouseCursor.x = _stage.mouseX / _stage.stageWidth;
+				_mouseCursor.y = _stage.mouseY / _stage.stageHeight;
+				
+				_mouseCursor.icon.x = _stage.mouseX;
+				_mouseCursor.icon.y = _stage.mouseY;
+				
+				UIManager.addCursor(_mouseCursor);
+				_hasBeenAdded = true;
+			}
 		}
 
 		private static function removeMouseCursor():void {
-			UIManager.removeCursor(_mouseCursor);
+			if(UIManager.isInitialized) UIManager.removeCursor(_mouseCursor);
 			_hasBeenAdded = false;
 		}
 

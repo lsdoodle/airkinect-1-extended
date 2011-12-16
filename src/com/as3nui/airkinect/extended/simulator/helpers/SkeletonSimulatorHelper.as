@@ -204,7 +204,7 @@ package com.as3nui.airkinect.extended.simulator.helpers {
 		}
 
 		/**
-		 * Disables the Simulation Helper. IT will not longer repsond to key presses, and skeleton updates.
+		 * Disables the Simulation Helper. IT will not longer responds to key presses, and skeleton updates.
 		 */
 		public static function disable():void {
 			if (!_enabled) return;

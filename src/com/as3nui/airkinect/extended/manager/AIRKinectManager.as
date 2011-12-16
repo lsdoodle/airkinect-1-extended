@@ -301,6 +301,8 @@ package com.as3nui.airkinect.extended.manager {
 				}
 				_skeletonDispatchers = null;
 			}
+
+			AIRKinect.shutdown()
 		}
 
 		/**
@@ -501,6 +503,7 @@ package com.as3nui.airkinect.extended.manager {
 				var index:int = _skeletonDispatchers.indexOf(dispatcher);
 				if (index >= 0) _skeletonDispatchers.splice(index, 1);
 				var skeletonIndex:String;
+				if(!_dispatcherLookup) return;
 				for (skeletonIndex in _dispatcherLookup[dispatcher]) {
 					if (_dispatcherLookup[dispatcher][skeletonIndex] is Skeleton) {
 						_onSkeletonRemoved.dispatch((_dispatcherLookup[dispatcher][skeletonIndex] as Skeleton));

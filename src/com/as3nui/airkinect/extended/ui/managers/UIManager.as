@@ -18,6 +18,7 @@ package com.as3nui.airkinect.extended.ui.managers {
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.geom.Vector3D;
+	import flash.text.ReturnKeyLabel;
 	import flash.utils.Dictionary;
 
 	public class UIManager {
@@ -37,6 +38,12 @@ package com.as3nui.airkinect.extended.ui.managers {
 		public static function init(stage:Stage):void {
 			if(_instance) return;
 			_instance = new UIManager(stage);
+		}
+		
+		public static function dispose():void {
+			if(!_instance) return;
+			instance.dispose();
+			_instance = null;
 		}
 
 		public static function addCursor(cursor:Cursor):void {
@@ -94,6 +101,23 @@ package com.as3nui.airkinect.extended.ui.managers {
 			this._components = new <InteractiveObject>[];
 			this._targetLookup = new Dictionary();
 		}
+		
+		public function dispose():void {
+			if(_stage.contains(_cursorContainer)) _stage.removeChild(_cursorContainer);
+			_stage.removeEventListener(Event.ADDED, onStageChildAdded);
+			_stage.removeEventListener(Event.ENTER_FRAME, onPulse);
+
+			if(_cursors) {
+				var cursors:Vector.<Cursor> = _cursors.concat();
+				for each(var cursor:Cursor in cursors){
+					removeCursor(cursor);
+				}
+			}
+
+			this._cursors = null;
+			this._components = null;
+			this._targetLookup = null;
+		}
 
 		private function onStageChildAdded(event:Event):void {
 			updateCursorContainer();
@@ -104,12 +128,14 @@ package com.as3nui.airkinect.extended.ui.managers {
 		}
 
 		public function addCursor(cursor:Cursor):void {
+			if(!this._cursors) return;
 			if(this._cursors.indexOf(cursor) >= 0) return;
 			this._cursors.push(cursor);
 			_cursorContainer.addChild(cursor.icon);
 		}
 
 		public function removeCursor(cursor:Cursor):void {
+			if(!this._cursors) return;
 			var cursorIndex:Number = this._cursors.indexOf(cursor);
 			if(cursorIndex == -1) return;
 			this._cursors.splice(cursorIndex, 1);
@@ -134,7 +160,9 @@ package com.as3nui.airkinect.extended.ui.managers {
 				_targetLookup[cursor.source][cursor.id]  = _stage;
 			}
 
-			if(_cursorContainer.contains(cursor.icon)) _cursorContainer.removeChild(cursor.icon);
+			if(_cursorContainer.contains(cursor.icon)) {
+				_cursorContainer.removeChild(cursor.icon);
+			}
 		}
 
 		public function onPulse(event:Event):void {

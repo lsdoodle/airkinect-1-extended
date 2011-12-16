@@ -37,6 +37,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		 */
 		public static function dispose():void {
 			instance.dispose();
+			_instance = null;
 		}
 
 		/**
