@@ -13,6 +13,21 @@ package com.as3nui.airkinect.extended.ui.components {
 	import flash.geom.Point;
 	import flash.utils.getTimer;
 
+	/**
+	 * RepeatingSelectableHandle component allows for multiple selections of the same handle. This is done with an optional repeat timer.
+	 * The flow of this component would be as follows.
+	 *	<ul>
+	 *		<li>Cursor Attraction</li>
+	 * 		<li>Cursor Capture</li>
+	 * 		<li>SelectionTimer Start</li>
+	 * 		<li>SelectionTimer Complete (dispatched event)</li>
+	 * 		<li>(optional) Repeat Timer start</li>
+	 * 		<li>(optional) Repeat Timer complete</li>
+	 * 		<li>SelectionTimer Start</li> (repeats)
+	 * 	</ul>
+	 *
+	 * 	If RepeatTimer is left null the selection timer will simply start again after completed
+	 */
 	public class RepeatingSelectableHandle extends Handle {
 
 		protected var _selectionTimer:BaseTimerSprite;
@@ -24,7 +39,19 @@ package com.as3nui.airkinect.extended.ui.components {
 		protected var _repeatDelay:uint;
 		protected var _repeatStartTime:Number;
 
-
+		/**
+		 * Allows for Repeating Selections from the same handle delayed by selecetion time and an optional repeat timer.
+		 * @param icon				Normal Icon for displaying this handle
+		 * @param selectionTimer	Selection Timer used after capture
+		 * @param repeatTimer		Repeat Timer used after selection
+		 * @param selectedIcon		Icon to use during capture of cursor
+		 * @param disabledIcon		Icon to use when handle is disabled
+		 * @param selectionDelay	Delay for selection timer (seconds)
+		 * @param repeatDelay		Delay for repeat timer (seconds)
+		 * @param capturePadding	@see Handle._capturePadding
+		 * @param minPull			@see Handle.minPull
+		 * @param maxPull			@see Handle.maxPull
+		 */
 		public function RepeatingSelectableHandle(icon:DisplayObject, selectionTimer:BaseTimerSprite, repeatTimer:BaseTimerSprite = null, selectedIcon:DisplayObject = null, disabledIcon:DisplayObject = null, selectionDelay:uint = 1, repeatDelay:uint = 1, capturePadding:Number = .45, minPull:Number = .1, maxPull:Number = 1) {
 			super(icon, selectedIcon, disabledIcon, capturePadding, minPull, maxPull);
 			_selectionDelay = selectionDelay;
@@ -107,12 +134,35 @@ package com.as3nui.airkinect.extended.ui.components {
 		//----------------------------------
 		// Selection Delay
 		//----------------------------------
+
+		/**
+		 * Returns the current delay for selection (seconds)
+		 */
 		public function get selectionDelay():uint {
 			return _selectionDelay;
 		}
 
+		/**
+		 * Sets the current Delay for selection
+		 * @param value			Delay in seconds
+		 */
 		public function set selectionDelay(value:uint):void {
 			_selectionDelay = value;
+		}
+
+		/**
+		 * Returns the current delay for repeating timer (seconds)
+		 */
+		public function get repeatDelay():uint {
+			return _repeatDelay;
+		}
+
+		/**
+		 * Sets the current repeat timer delay (seconds)
+		 * @param value		Delay in seconds
+		 */
+		public function set repeatDelay(value:uint):void {
+			_repeatDelay = value;
 		}
 	}
 }

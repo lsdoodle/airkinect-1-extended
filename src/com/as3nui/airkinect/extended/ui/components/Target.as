@@ -16,6 +16,25 @@ package com.as3nui.airkinect.extended.ui.components {
 	import flash.geom.Point;
 	import flash.utils.getTimer;
 
+	/**
+	 * A Target does not attract a cursor but does use the Selection Timer Mechanism. This component dispatches
+	 * OVER, OUT, and SELECTED. Upon Rollover a Target will not capture a cursor but will turn it invisible then the target
+	 * will position the Selection Timer at the location of the cursor. This gives the illusion that the cursor has changed into
+	 * the selection timer but still allows movement.
+	 * The flow of this component would be as follows.
+	 * <p>
+	 *	<ul>
+	 *		<li>Cursor Over</li>
+	 *		<li>Cursor Turned invisible</li>
+	 *		<li>Selection Timer placed at location of cursor<li>
+	 *		<li>Selection Timer Started</li>
+	 *		<li>(optional, if moved) Cursor movement mapped to selection timer movement</li>
+	 * 		<li>Selection Time Complete (dispatches selected event)</li>
+	 * 		<li>Selection Timer removed</li>
+	 * 		<li>Cursor turned visible</li>
+	 * 	</ul>
+	 * </p>
+	 */
 	public class Target extends HotSpot {
 		protected var _globalCursorPosition:Point = new Point();
 		protected var _localCursorPosition:Point = new Point();
@@ -25,7 +44,13 @@ package com.as3nui.airkinect.extended.ui.components {
 		protected var _selectionStartTimer:int;
 		protected var _selectionDelay:uint;
 
-		
+		/**
+		 * Creates a new Target UIComponent
+		 * @param icon				Icon to use for normal display
+		 * @param selectionTimer	SelectionTimer to use upon RollOver
+		 * @param disabledIcon		Icon to use when disabled
+		 * @param selectionDelay	Delay for Selection Timer (seconds)
+		 */
 		public function Target(icon:DisplayObject, selectionTimer:BaseTimerSprite, disabledIcon:DisplayObject=null, selectionDelay:uint = 1){
 			super(icon, disabledIcon);
 			_selectionTimer = selectionTimer;
@@ -90,10 +115,17 @@ package com.as3nui.airkinect.extended.ui.components {
 		//----------------------------------
 		// Selection Delay
 		//----------------------------------
+		/**
+		 * Returns the current delay for selection (seconds)
+		 */
 		public function get selectionDelay():uint {
 			return _selectionDelay;
 		}
 
+		/**
+		 * Sets the current Delay for selection
+		 * @param value			Delay in seconds
+		 */
 		public function set selectionDelay(value:uint):void {
 			_selectionDelay = value;
 		}

@@ -10,11 +10,31 @@ package com.as3nui.airkinect.extended.ui.components {
 
 	import flash.display.DisplayObject;
 
+	/**
+	 * HotSpot component dispatches OVER and OUT events and will never be selected. If provides for simple roll over selections
+	 * and roll out deselection.
+	 * <p>
+	 * <code>
+	 *		var s:Sprite = new Sprite();
+	 *		s.graphics.beginFill(Math.random()*0xffffff);
+	 *		s.graphics.drawRect(0,0,200,200);
+	 *
+	 *		var hotSpot:HotSpot = new HotSpot(s);
+	 *		hotSpot.addEventListener(UIEvent.OVER, onHotSpotOver, false, 0, true);
+	 *		this.addChild(hotSpot);
+	 * </code>
+	 * </p>
+	 */
 	public class HotSpot extends BaseUIComponent {
 		protected var _icon:DisplayObject;
 		protected var _idleIcon:DisplayObject;
 		protected var _disabledIcon:DisplayObject;
 
+		/**
+		 * Crates a new HotSpot UIComponent
+		 * @param icon				Normal Icon for display
+		 * @param disabledIcon		Disabled Icon
+		 */
 		public function HotSpot(icon:DisplayObject,disabledIcon:DisplayObject=null){
 			super();
 			_icon = _idleIcon = icon;
@@ -50,6 +70,10 @@ package com.as3nui.airkinect.extended.ui.components {
 			this.removeEventListener(CursorEvent.MOVE, onCursorMove);
 		}
 
+		/**
+		 * When disabled a target will not interact with cursors or dispatch events
+		 * @param value		Boolean ot enabled status
+		 */
 		override public function set enabled(value:Boolean):void {
 			super.enabled = value;
 			if(_enabled){

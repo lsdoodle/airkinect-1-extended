@@ -8,13 +8,37 @@ package com.as3nui.airkinect.extended.ui.components {
 	import com.as3nui.airkinect.extended.ui.events.UIEvent;
 
 	import flash.display.DisplayObject;
-
-	import flash.display.DisplayObject;
 	import flash.display.Graphics;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Point;
 
+	/**
+	 * Crank Handle Component is used to provide a unlimited range of movement through a small component.
+	 * This component will use the basic handle mentality of cursor attraction and capture then provides a mechanism for rotation to
+	 * dispatch move events. These move events will contain the current value of the rotation along with the delta change from the last dispatch in Radians.
+	 * <p>
+	 * <code>
+	 *		var circle:Sprite = new Sprite();
+	 *		circle.graphics.beginFill(color);
+	 *		circle.graphics.drawCircle(radius, radius, radius);
+	 *		var rotator:Sprite = new Sprite();
+	 *		rotator.graphics.beginFill(0x000000, .5);
+	 *		rotator.graphics.drawCircle(radius*2, radius*2, radius*2);
+	 *
+	 *		var ch:CrankHandle = new CrankHandle(circle,  rotator);
+	 *		this.addChild(ch);
+	 *
+	 *		ch.addEventListener(UIEvent.MOVE, onCrankMove, false, 0, true);
+	 *
+	 *		//Capture the Move Event and look at the value or delta properties
+	 * 		private function onCrankMove(event:UIEvent):void {
+	 *			var ratio:Number = event.value / (Math.PI * 2);
+	 *		}
+	 *
+	 * </code>
+	 * </p>
+	 */
 	public class CrankHandle extends Handle {
 		protected var _rotator:DisplayObject;
 		protected var _rotatorCaptureArea:Sprite;
@@ -36,6 +60,17 @@ package com.as3nui.airkinect.extended.ui.components {
 		//determines is this is the FIRST update of movement in a rotation;
 		private var _isFirstUpdate:Boolean;
 
+		/**
+		 * Creates a new UI Crank handle
+		 * @param icon						Icon for general rendering
+		 * @param rotator					Graphic to show once cursor is captured
+		 * @param selectedIcon				Icon to use when a cursor is captured into this Handle
+		 * @param disabledIcon				Icon to use when handle is disabled
+		 * @param rotatorCapturePadding		Padding to use around Rotator Graphic
+		 * @param capturePadding			@see Handle._capturePadding
+		 * @param minPull					@see Handle.minPull
+		 * @param maxPull					@see Handle.maxPull
+		 */
 		public function CrankHandle(icon:DisplayObject, rotator:DisplayObject, selectedIcon:DisplayObject = null, disabledIcon:DisplayObject = null, rotatorCapturePadding:Number = 400, capturePadding:Number = .45, minPull:Number = .1, maxPull:Number = 1){
 			super(icon, selectedIcon, disabledIcon, capturePadding, minPull, maxPull);
 			_rotator = rotator;
@@ -192,11 +227,17 @@ package com.as3nui.airkinect.extended.ui.components {
 			_debugDial.addChild(_debugArrow);
 		}
 
-
+		/**
+		 * Returns current state of drawing the debug
+		 */
 		public function get drawDebug():Boolean {
 			return _drawDebug;
 		}
 
+		/**
+		 * Controls the drawing of the debug indicator for this handle.
+		 * @param value		Boolean to set the status to.
+		 */
 		public function set drawDebug(value:Boolean):void {
 			_drawDebug = value;
 

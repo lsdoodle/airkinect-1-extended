@@ -12,6 +12,15 @@ package com.as3nui.airkinect.extended.ui.helpers {
 	import flash.events.MouseEvent;
 	import flash.ui.Mouse;
 
+	/**
+	 * MouseSimulator Class provides simple access to use the mouse as a Cursor in the UIManager.
+	 * To use the this helper simple add the folloowing line to your code
+	 * <p>
+	 * <code>
+	 * 		MouseSimulator.init(stage);
+	 * </code>
+	 * </p>
+	 */
 	public class MouseSimulator {
 		protected static var _stage:Stage;
 		protected static var _source:String = "mouse_adapter";
@@ -19,6 +28,11 @@ package com.as3nui.airkinect.extended.ui.helpers {
 		protected static var _mouseCursor:Cursor;
 		protected static var _enabled:Boolean;
 
+		/**
+		 * Initializes the Mouse Simulator by creating a cursor for your mouse and attempting to add it to the UIManager.
+		 * If the UIManager is not initialized yet the simulator will continue to attempt registration on MouseMove
+		 * @param stage		stage reference
+		 */
 		public static function init(stage:Stage):void {
 			trace("Simulator Initialized");
 			_stage = stage;
@@ -27,6 +41,9 @@ package com.as3nui.airkinect.extended.ui.helpers {
 			enable();
 		}
 
+		/**
+		 * Removes the mouse cursor from the UIManager and removes the MouseSimulator From memory
+		 */
 		public static function uninit():void {
 			disable();
 			removeMouseCursor();
@@ -34,6 +51,9 @@ package com.as3nui.airkinect.extended.ui.helpers {
 			_stage = null;
 		}
 
+		/**
+		 * Enables the Mouse Cursor by hiding the actual mouse and adding the cursor to the UIManager
+		 */
 		public static function enable():void {
 			if(_enabled) return;
 
@@ -43,6 +63,9 @@ package com.as3nui.airkinect.extended.ui.helpers {
 			if(UIManager.isInitialized) addMouseCursor();
 		}
 
+		/**
+		 * Disables the Mouse Cursor by unregistering it form the UIManager, turns on the real mouse cursor.
+		 */
 		public static function disable():void {
 			if(!_enabled) return;
 			_enabled = false;
@@ -77,11 +100,16 @@ package com.as3nui.airkinect.extended.ui.helpers {
 			_hasBeenAdded = false;
 		}
 
-
+		/**
+		 * Returns Initialized status of the MouseSimulator
+		 */
 		public static function get isInitialized():Boolean {
 			return !(_stage == null);
 		}
 
+		/**
+		 * Returns enabled status of the Mouse Simulator
+		 */
 		public static function get enabled():Boolean {
 			return _enabled;
 		}

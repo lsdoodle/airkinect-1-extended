@@ -5,14 +5,53 @@
  * Time: 1:04 PM
  */
 package com.as3nui.airkinect.extended.ui.objects {
-	import com.as3nui.airkinect.extended.ui.components.interfaces.core.IAttractor;
-	import com.as3nui.airkinect.extended.ui.components.interfaces.core.ICaptureHost;
+	import com.as3nui.airkinect.extended.ui.components.interfaces.IAttractor;
+	import com.as3nui.airkinect.extended.ui.components.interfaces.ICaptureHost;
 
 	import flash.display.DisplayObject;
 	import flash.geom.Point;
 
+
+	/**
+	 * Cursors are used through the UImanager to interact with UI components. Cursor management can be done when required
+	 * by calling the update function and changting the x,y,z location of a cursor.
+	 * To create a Cursor use the following
+	 * <p>
+	 * <code>
+	 *     //Create a Graphic Element to represent the cursor
+	 *     	var circle:Shape = new Shape();
+	 *		circle.graphics.lineStyle(2, 0x000000);
+	 *		circle.graphics.beginFill(0x00ff00);
+	 *		circle.graphics.drawCircle(0, 0, 20);
+	 *
+	 *		//Create a Cursor to use for the left hand
+	 *		//source and ID parameters can be anything, they are only set to "_kinect_" and SkeletonPosition.HAND_LEFT for easy understanding
+	 *		//they could just as easily be "mysource" and 1.
+	 *  	_leftHandCursor = new Cursor("_kinect_", SkeletonPosition.HAND_LEFT, circle);
+	 *
+	 *  	//Add the Cursor to the UIManager
+	 *  	UIManager.addCursor(_leftHandCursor);
+	 * </code>
+	 * </p>
+	 *
+	 * To Update a Cursor using the previous example as a base use the following
+	 * <p>
+	 * <code>
+	 *
+	 *     //This will usually run on Enterframe or SkeletonFrameUpdate
+	 *     _leftHandCursor.update(newX, newY, newZ);
+	 * </code>
+	 */
 	public class Cursor {
+
+		/**
+		 * State ikn which the cursor is free moving
+		 */
 		public static const FREE:String = "free";
+
+		/**
+		 * State inwhich the cursor ic captured by a component and not visible or moving.
+		 */
 		public static const CAPTURED:String = "captured";
 
 		protected var _source:String;
@@ -44,6 +83,13 @@ package com.as3nui.airkinect.extended.ui.objects {
 
 		protected var _easing:Number;
 
+		/**
+		 * Cursor is used to interact with UIComponents through the UIManager
+		 * @param source		A Source for this cursor (mouse, kinect, etc)
+		 * @param id			A unique ID for this cursor
+		 * @param icon			Icon to represent the cursor
+		 * @param easing		Easing this cursor will use for attraction for handles in the UI
+		 */
 		public function Cursor(source:String, id:uint, icon:DisplayObject, easing:Number = .3) {
 			_source = source;
 			_id = id;
@@ -61,6 +107,11 @@ package com.as3nui.airkinect.extended.ui.objects {
 		//----------------------------------
 		// Capture/Release Function
 		//----------------------------------
+
+		/**
+		 * Captures this cursor causing it to turn invisible and stop being attracted to any UIComponents
+		 * @param host		Host that has captured this cursor
+		 */
 		public function capture(host:ICaptureHost):void {
 			_captureHost = host;
 			_state = CAPTURED;
@@ -68,16 +119,27 @@ package com.as3nui.airkinect.extended.ui.objects {
 			this.stopAttraction();
 		}
 
+		/**
+		 * Releases the cursor from the captured state, returning control and visibility
+		 */
 		public function release():void {
 			_captureHost = null;
 			_state = FREE;
 			this._icon.visible = true;
 		}
 
+		/**
+		 * Starts attracting this cursor towards a IAttractor
+		 * @param attractor		IAttractor to move towards
+		 */
 		public function startAttraction(attractor:IAttractor):void {
 			_attractor = attractor;
 		}
 
+		/**
+		 * Stops attraction by clearing out current attraction params and allowing the cursor to move
+		 * freely.
+		 */
 		public function stopAttraction():void {
 			_attractor = null;
 		}

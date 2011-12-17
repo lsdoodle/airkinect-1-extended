@@ -13,13 +13,34 @@ package com.as3nui.airkinect.extended.ui.components {
 	import flash.geom.Point;
 	import flash.utils.getTimer;
 
+	/**
+	 * SelectableHandle uses a Selection Timer upon capture to determine selection.
+	 * The flow of this component would be as follows.
+	 *	<ul>
+	 *		<li>Cursor Attraction</li>
+	 * 		<li>Cursor Capture</li>
+	 * 		<li>SelectionTimer Start</li>
+	 * 		<li>SelectionTimer Complete (dispatched event)</li>
+	 * 		<li>Cursor Release</li>
+	 * 	</ul>
+	 */
 	public class SelectableHandle extends Handle {
 
 		protected var _selectionTimer:BaseTimerSprite;
 		protected var _selectionStartTimer:int;
 		protected var _selectionDelay:uint;
 
-
+		/**
+		 * Creates a Selectable Handle UIComponent
+		 * @param icon				Icon to use for normal display
+		 * @param selectionTimer	Selection Timer to use upon capture
+		 * @param selectedIcon		Icon to use during Capture of cursor
+		 * @param disabledIcon		Icon to use when handle is disabled
+		 * @param selectionDelay	Delay for selection (seconds)
+		 * @param capturePadding	@see Handle._capturePadding
+		 * @param minPull			@see Handle.minPull
+		 * @param maxPull			@see Handle.maxPull
+		 */
 		public function SelectableHandle(icon:DisplayObject, selectionTimer:BaseTimerSprite, selectedIcon:DisplayObject = null, disabledIcon:DisplayObject = null, selectionDelay:uint = 1, capturePadding:Number = .45, minPull:Number = .1, maxPull:Number = 1) {
 			super(icon, selectedIcon, disabledIcon, capturePadding, minPull, maxPull);
 			_selectionDelay = selectionDelay;
@@ -68,10 +89,17 @@ package com.as3nui.airkinect.extended.ui.components {
 		//----------------------------------
 		// Selection Delay
 		//----------------------------------
+		/**
+		 * Returns the current delay for selection (seconds)
+		 */
 		public function get selectionDelay():uint {
 			return _selectionDelay;
 		}
 
+		/**
+		 * Sets the current Delay for selection
+		 * @param value			Delay in seconds
+		 */
 		public function set selectionDelay(value:uint):void {
 			_selectionDelay = value;
 		}

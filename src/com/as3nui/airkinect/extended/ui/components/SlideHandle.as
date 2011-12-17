@@ -5,17 +5,50 @@
  * Time: 2:22 PM
  */
 package com.as3nui.airkinect.extended.ui.components {
-	import com.as3nui.airkinect.extended.ui.components.interfaces.ISlideHandle;
 	import com.as3nui.airkinect.extended.ui.events.CursorEvent;
 	import com.as3nui.airkinect.extended.ui.events.UIEvent;
-
-	import flash.display.DisplayObject;
 
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.geom.Point;
 
-	public class SlideHandle extends Handle implements ISlideHandle {
+	/**
+	 * SlideHandle component provides a mechanism for "Swipe" love movement with incremental updates. The slide handle
+	 * can be places in four possible directions (up, down, left, right).
+	 * The flow of this component would be as follows.
+	 * <p>
+	 *	<ul>
+	 *		<li>Cursor Attraction</li>
+	 * 		<li>Cursor Capture</li>
+	 * 		<li>Track Appears</li>
+	 * 		<li>Handle Icon attaches to cursor</li>
+	 * 		<li>Move events dispatched (value is progress from 0-1)</li>
+	 * 		<li>Handle reaches end of track (dispatched sleected event)</li>
+	 * 		<li>Cursor is Released</li>
+	 * 		<li>Track is Hidden<li>
+	 * 	</ul>
+	 * </p>
+	 *
+	 * <p>
+	 *     <code>
+	 *       	var circle:Shape = new Shape();
+	 *			circle.graphics.beginFill(_color);
+	 *			circle.graphics.drawCircle(_radius,_radius,_radius);
+	 *
+	 *			var track:Shape = new Shape();
+	 *			track.graphics.beginFill(0x0000ff, .5);
+	 *			track.graphics.drawRect(0,0, 300, _radius*2);
+	 *
+	 *			var sh:SlideHandle = new SlideHandle (circle, track, null, null, SlideHandle.RIGHT);
+	 *
+	 *			sh.addEventListener(UIEvent.SELECTED, onSlideSelected, false, 0, true);
+	 *
+	 *			//event.value will be the progress of this current slide from 0 (begining) to 1 (end)
+	 *			sh.addEventListener(UIEvent.MOVE, onMove, false, 0, true);
+	 *		</code>
+	 * </p>
+	 */
+	public class SlideHandle extends Handle {
 		public static const UP:String = "up";
 		public static const DOWN:String = "down";
 		public static const LEFT:String = "left";
@@ -32,7 +65,17 @@ package com.as3nui.airkinect.extended.ui.components {
 		protected var _trackCaptureArea:Shape;
 		protected var _trackCapturePadding:Number = .25;
 
-
+		/**
+		 * Creates a New SlideHandle UIComponent
+		 * @param icon				Icon to use used for the handle
+		 * @param track				Graphics to be used as the track
+		 * @param selectedIcon		Icon to be used when Handle has captured the cursor
+		 * @param disabledIcon		Icon to be used when handle is disabled
+		 * @param orientation		Current Orientation of this Handle @default LEFT
+		 * @param capturePadding	@see Handle._capturePadding
+		 * @param minPull			@see Handle.minPull
+		 * @param maxPull			@see Handle.maxPull
+		 */
 		public function SlideHandle(icon:DisplayObject, track:DisplayObject, selectedIcon:DisplayObject = null, disabledIcon:DisplayObject = null, orientation:String = LEFT, capturePadding:Number = .45, minPull:Number = .1, maxPull:Number = 1) {
 			super(icon, selectedIcon, disabledIcon, capturePadding, minPull, maxPull);
 			_track = track;
@@ -179,6 +222,9 @@ package com.as3nui.airkinect.extended.ui.components {
 
 		}
 
+		/**
+		 * Returns the current orientation of this SlideHandle
+		 */
 		public function get orientation():String {
 			return _orientation;
 		}
