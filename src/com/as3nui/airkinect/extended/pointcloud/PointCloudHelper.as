@@ -10,10 +10,32 @@ package com.as3nui.airkinect.extended.pointcloud {
 	import flash.net.FileReference;
 	import flash.utils.ByteArray;
 
+	/**
+	 * This Utility will have take Depth Image Byte Array data and save it in a variety of standard Point Cloud Formats.
+	 * For example to save in PLY format for Blender to MeshLab use the following.
+	 * <p>
+	 * <code>
+	 *     	private function onDepthFrame(e:CameraFrameEvent):void {
+	 *			_depthPoints = e.data;
+	 *		}
+	 *
+	 *  	PointCloudHelper.savePTS(_depthPoints);
+	 * </code>
+	 * </p>
+	 */
 	public class PointCloudHelper {
 		private static var _onSave:Function;
 		private static var _onCancel:Function;
 
+		/**
+		 * Saves Depth Data in Stardard PTS Format for use with 3DS Max 'Project Helix' Point Cloud tools.
+		 * More information here http://labs.autodesk.com/utilities/3dsmax_pointcloud/
+		 *
+		 * @param depthData			Depth Points Byte Array from a Camera Update
+		 * @param intensity			Intensity to use in file (intensity is reflectivity of a point currently not in the Kinect)
+		 * @param saveCallback		Callback function to called if file save is complete, will be passed a single Event Param
+		 * @param cancelCallback	Callback function to called if file cancel is complete, will be passed a single Event Param
+		 */
 		public static function savePTS(depthData:ByteArray, intensity:Number = .1, saveCallback:Function = null, cancelCallback:Function = null):void {
 			var ba:ByteArray = new ByteArray();
 			ba.writeUTFBytes((depthData.length / 6).toString());
@@ -43,6 +65,14 @@ package com.as3nui.airkinect.extended.pointcloud {
 			saveByteArray(ba, "pts");
 		}
 
+		/**
+		 * Saves Depth Data in Standard XYZ Format for use with such tools as MeshLab. This format is simply positional point data
+		 * and does not contain and Intensity or RGB point values.
+		 *
+		 * @param depthData			Depth Points Byte Array from a Camera Update
+		 * @param saveCallback		Callback function to called if file save is complete, will be passed a single Event Param
+		 * @param cancelCallback	Callback function to called if file cancel is complete, will be passed a single Event Param
+		 */
 		public static function saveXYZ(depthData:ByteArray, saveCallback:Function = null, cancelCallback:Function = null):void {
 			var ba:ByteArray = new ByteArray();
 			ba.writeUTFBytes((depthData.length / 6).toString());
@@ -65,6 +95,13 @@ package com.as3nui.airkinect.extended.pointcloud {
 			saveByteArray(ba, "xyz");
 		}
 
+		/**
+		 * Saves Depth Data in Standard PLY Format for use with such tools as MeshLab and Blender.
+		 * Format does not include intensity but does contain per point RGB data (currently Grayscale)
+		 * @param depthData			Depth Points Byte Array from a Camera Update
+		 * @param saveCallback		Callback function to called if file save is complete, will be passed a single Event Param
+		 * @param cancelCallback	Callback function to called if file cancel is complete, will be passed a single Event Param
+		 */
 		public static function savePLY(depthData:ByteArray, saveCallback:Function = null, cancelCallback:Function = null):void {
 
 			var header:String = "ply" + File.lineEnding;
