@@ -143,8 +143,8 @@ package com.as3nui.airkinect.extended.simulator.helpers {
 
 			_onSkeletonFrame = new Signal(SkeletonFrame);
 			_onRecordingStopped = new Signal(XML);
-			_onRecordingSaveSuccess = new Signal(XML);
-			_onRecordingSaveCancel = new Signal(XML);
+			_onRecordingSaveSuccess = new Signal();
+			_onRecordingSaveCancel = new Signal();
 
 			_autoAddToManager = autoAddToManager;
 			enable();
