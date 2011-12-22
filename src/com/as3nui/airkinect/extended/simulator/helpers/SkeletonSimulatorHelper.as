@@ -8,7 +8,7 @@ package com.as3nui.airkinect.extended.simulator.helpers {
 	import com.as3nui.airkinect.extended.manager.AIRKinectManager;
 	import com.as3nui.airkinect.extended.simulator.SkeletonPlayer;
 	import com.as3nui.airkinect.extended.simulator.SkeletonRecorder;
-	import com.as3nui.nativeExtensions.kinect.data.SkeletonFrame;
+	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonFrame;
 	import com.as3nui.nativeExtensions.kinect.events.SkeletonFrameEvent;
 
 	import flash.display.Stage;
@@ -141,7 +141,7 @@ package com.as3nui.airkinect.extended.simulator.helpers {
 			_skeletonPlayer = new SkeletonPlayer();
 			_skeletonRecorder = new SkeletonRecorder();
 
-			_onSkeletonFrame = new Signal(SkeletonFrame);
+			_onSkeletonFrame = new Signal(AIRKinectSkeletonFrame);
 			_onRecordingStopped = new Signal(XML);
 			_onRecordingSaveSuccess = new Signal();
 			_onRecordingSaveCancel = new Signal();

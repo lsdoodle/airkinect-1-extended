@@ -258,6 +258,11 @@ package com.as3nui.airkinect.extended.ui.managers {
 						targetObject = _targetLookup[cursor.source][cursor.id] as InteractiveObject;
 						localPoint = targetObject.globalToLocal(cursorPoint);
 
+						//Stop Attraction
+						if(targetObject is IAttractor) cursor.stopAttraction();
+						//Release Cursor
+						if(targetObject is ICaptureHost && (targetObject as ICaptureHost).hasCursor) (targetObject as ICaptureHost).release(cursor);
+
 						//Dispatch OUT
 						(_targetLookup[cursor.source][cursor.id] as InteractiveObject).dispatchEvent(new CursorEvent(CursorEvent.OUT, cursor,  targetObject, localPoint.x,  localPoint.y,  _inputPoint.x,  _inputPoint.y));
 						_targetLookup[cursor.source][cursor.id]  = _stage;

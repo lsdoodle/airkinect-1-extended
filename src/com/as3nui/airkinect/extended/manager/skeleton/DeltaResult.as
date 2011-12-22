@@ -9,8 +9,8 @@ package com.as3nui.airkinect.extended.manager.skeleton {
 	import flash.utils.Dictionary;
 
 	/**
-	 * Used is History comparisions of Skeleton classes a Delta Result
-	 * contains a collection of data about the difference of an elements position over time.
+	 * Used is History comparison of Skeleton classes a Delta Result
+	 * contains a collection of data about the difference of an joints position over time.
 	 * Can be useful for determining the direction and magnitude over time.
 	 */
 	public class DeltaResult {
@@ -57,9 +57,9 @@ package com.as3nui.airkinect.extended.manager.skeleton {
 		public static const FORWARD:String = "forward";
 
 		/**
-		 * ElementID for current Delta Result
+		 * JointID for current Delta Result
 		 */
-		private var _elementID:uint;
+		private var _jointID:uint;
 		/**
 		 * Depths in history used in calculations
 		 */
@@ -74,13 +74,13 @@ package com.as3nui.airkinect.extended.manager.skeleton {
 		private var _orientation:Dictionary;
 
 		/**
-		 * Creates a New DeltaResult for a Element over dpeth in history.
-		 * @param elementID		ElementID for Result
+		 * Creates a New DeltaResult for a Joint over depth in history.
+		 * @param jointID		JointID for Result
 		 * @param depth			Depth in history
-		 * @param delta			Delta change over the depth in history for this element
+		 * @param delta			Delta change over the depth in history for this joint
 		 */
-		public function DeltaResult(elementID:uint, depth:uint, delta:Vector3D) {
-			_elementID = elementID;
+		public function DeltaResult(jointID:uint, depth:uint, delta:Vector3D) {
+			_jointID = jointID;
 			_depth = depth;
 			_delta = delta;
 
@@ -91,10 +91,10 @@ package com.as3nui.airkinect.extended.manager.skeleton {
 		}
 
 		/**
-		 * Getter for Current ElementID used in calulcations
+		 * Getter for Current JointID used in calulcations
 		 */
-		public function get elementID():uint {
-			return _elementID;
+		public function get jointID():uint {
+			return _jointID;
 		}
 
 		/**

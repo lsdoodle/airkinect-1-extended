@@ -6,12 +6,12 @@
  */
 package com.as3nui.airkinect.extended.simulator {
 	import com.as3nui.nativeExtensions.kinect.AIRKinect;
-	import com.as3nui.nativeExtensions.kinect.data.SkeletonFrame;
-	import com.as3nui.nativeExtensions.kinect.data.SkeletonPosition;
+	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeleton;
+	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonJoint;
+	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonFrame;
 	import com.as3nui.nativeExtensions.kinect.events.SkeletonFrameEvent;
 
 	import flash.events.EventDispatcher;
-	import flash.geom.Vector3D;
 	import flash.utils.getTimer;
 
 	/**
@@ -130,31 +130,31 @@ package com.as3nui.airkinect.extended.simulator {
 			xml.@duration 			= _recordedDuration;
 			xml.@recordStartTime 	= _recordingStartTimer;
 
-			var element:Vector3D;
+			var joint:AIRKinectSkeletonJoint;
 			var frameXML:XML;
 			var positionXML:XML;
-			var elementXML:XML;
+			var jointXML:XML;
 
-			var skeletonFrame:SkeletonFrame;
+			var skeletonFrame:AIRKinectSkeletonFrame;
 			for each(var timeCodedSkeletonFrame:TimeCodedSkeletonFrame in _currentRecording) {
 				skeletonFrame = timeCodedSkeletonFrame.skeletonFrame;
 				frameXML = <SkeletonFrame/>;
 				frameXML.@recordedTime = timeCodedSkeletonFrame.time;
-				for each(var skeletonPosition:SkeletonPosition in skeletonFrame.skeletonsPositions) {
+				for each(var skeletonPosition:AIRKinectSkeleton in skeletonFrame.skeletonsPositions) {
 					positionXML = <SkeletonPosition/>;
 					positionXML.@trackingID = skeletonPosition.trackingID;
 					positionXML.@timestamp = skeletonPosition.timestamp;
 					positionXML.@frame = skeletonPosition.frameNumber;
 					positionXML.@trackingState = skeletonPosition.trackingState;
 
-					for (var elementIndex:uint = 0; elementIndex < skeletonPosition.elements.length; elementIndex++) {
-						element = skeletonPosition.getElementRaw(elementIndex);
-						elementXML = <element/>;
-						elementXML.@id = elementIndex;
-						elementXML.@x = element.x.toString();
-						elementXML.@y = element.y.toString();
-						elementXML.@z = element.z.toString();
-						positionXML.appendChild(elementXML);
+					for (var jointIndex:uint = 0; jointIndex < skeletonPosition.joints.length; jointIndex++) {
+						joint = skeletonPosition.getJointRaw(jointIndex);
+						jointXML = <joint/>;
+						jointXML.@id = jointIndex;
+						jointXML.@x = joint.x.toString();
+						jointXML.@y = joint.y.toString();
+						jointXML.@z = joint.z.toString();
+						positionXML.appendChild(jointXML);
 					}
 					frameXML.appendChild(positionXML);
 				}
@@ -204,16 +204,16 @@ package com.as3nui.airkinect.extended.simulator {
 	}
 }
 
-import com.as3nui.nativeExtensions.kinect.data.SkeletonFrame;
+import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonFrame;
 
 /**
  * Timecoded Skeleton Frame is used to associate a Skeleton Frame with the time of a recording.
  */
 class TimeCodedSkeletonFrame {
 	private var _time:uint;
-	private var _skeletonFrame:SkeletonFrame;
+	private var _skeletonFrame:AIRKinectSkeletonFrame;
 
-	public function TimeCodedSkeletonFrame(time:uint, skeletonFrame:SkeletonFrame):void {
+	public function TimeCodedSkeletonFrame(time:uint, skeletonFrame:AIRKinectSkeletonFrame):void {
 		_time = time;
 		_skeletonFrame = skeletonFrame;
 	}
@@ -222,7 +222,7 @@ class TimeCodedSkeletonFrame {
 		return _time;
 	}
 
-	public function get skeletonFrame():SkeletonFrame {
+	public function get skeletonFrame():AIRKinectSkeletonFrame {
 		return _skeletonFrame;
 	}
 }

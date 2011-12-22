@@ -5,11 +5,11 @@
  * Time: 3:50 PM
  */
 package com.as3nui.airkinect.extended.manager {
-	import com.as3nui.airkinect.extended.manager.skeleton.Skeleton;
+	import com.as3nui.airkinect.extended.manager.skeleton.ExtendedSkeleton;
 	import com.as3nui.nativeExtensions.kinect.AIRKinect;
-	import com.as3nui.nativeExtensions.kinect.data.AIRKinectCameraConstants;
-	import com.as3nui.nativeExtensions.kinect.data.SkeletonFrame;
-	import com.as3nui.nativeExtensions.kinect.data.SkeletonPosition;
+	import com.as3nui.nativeExtensions.kinect.settings.AIRKinectCameraConstants;
+	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonFrame;
+	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeleton;
 	import com.as3nui.nativeExtensions.kinect.events.CameraFrameEvent;
 	import com.as3nui.nativeExtensions.kinect.events.DeviceStatusEvent;
 	import com.as3nui.nativeExtensions.kinect.events.SkeletonFrameEvent;
@@ -97,7 +97,7 @@ package com.as3nui.airkinect.extended.manager {
 		/**
 		 * @return		Next Available Skeleton in the collection
 		 */
-		public static function getNextSkeleton():Skeleton {
+		public static function getNextSkeleton():ExtendedSkeleton {
 			return instance.getNextSkeleton();
 		}
 
@@ -153,7 +153,7 @@ package com.as3nui.airkinect.extended.manager {
 			return instance.numSkeletons();
 		}
 
-		public static function currentSkeletons():Vector.<Skeleton> {
+		public static function currentSkeletons():Vector.<ExtendedSkeleton> {
 			return instance.currentSkeletons()
 		}
 
@@ -255,9 +255,9 @@ package com.as3nui.airkinect.extended.manager {
 				success = AIRKinect.initialize(flags);
 
 				_dispatcherLookup = new Dictionary();
-				_onSkeletonAdded = new Signal(Skeleton);
-				_onSkeletonUpdate = new Signal(Skeleton);
-				_onSkeletonRemoved = new Signal(Skeleton);
+				_onSkeletonAdded = new Signal(ExtendedSkeleton);
+				_onSkeletonUpdate = new Signal(ExtendedSkeleton);
+				_onSkeletonRemoved = new Signal(ExtendedSkeleton);
 				_onRGBFrameUpdate = new Signal(BitmapData);
 				_onDepthFrameUpdate = new Signal(BitmapData, ByteArray);
 				_onKinectDisconnected = new Signal();
@@ -313,8 +313,8 @@ package com.as3nui.airkinect.extended.manager {
 			var dispatcher:Object;
 			for (dispatcher in _dispatcherLookup) {
 				for (skeletonIndex in _dispatcherLookup[dispatcher]) {
-					if (_dispatcherLookup[dispatcher][skeletonIndex] is Skeleton) {
-						(_dispatcherLookup[dispatcher][skeletonIndex] as Skeleton).dispose();
+					if (_dispatcherLookup[dispatcher][skeletonIndex] is ExtendedSkeleton) {
+						(_dispatcherLookup[dispatcher][skeletonIndex] as ExtendedSkeleton).dispose();
 					}
 				}
 			}
@@ -328,9 +328,9 @@ package com.as3nui.airkinect.extended.manager {
 		protected function onSkeletonFrame(e:SkeletonFrameEvent):void {
 			if (!_isInitialized) return;
 
-			var skeletonFrame:SkeletonFrame = e.skeletonFrame;
-			var skeletonPosition:SkeletonPosition;
-			var skeleton:Skeleton;
+			var skeletonFrame:AIRKinectSkeletonFrame = e.skeletonFrame;
+			var skeletonPosition:AIRKinectSkeleton;
+			var skeleton:ExtendedSkeleton;
 			var trackedSkeletonIDs:Vector.<uint> = new Vector.<uint>();
 
 			if (!_dispatcherLookup[e.target]) _dispatcherLookup[e.target] = new Dictionary();
@@ -341,10 +341,10 @@ package com.as3nui.airkinect.extended.manager {
 					trackedSkeletonIDs.push(skeletonPosition.trackingID);
 
 					if (_dispatcherLookup[e.target][skeletonPosition.trackingID] == null) {
-						skeleton = _dispatcherLookup[e.target][skeletonPosition.trackingID] = new Skeleton(skeletonPosition);
+						skeleton = _dispatcherLookup[e.target][skeletonPosition.trackingID] = new ExtendedSkeleton(skeletonPosition);
 						_onSkeletonAdded.dispatch(skeleton);
 					} else {
-						skeleton = _dispatcherLookup[e.target][skeletonPosition.trackingID] as Skeleton;
+						skeleton = _dispatcherLookup[e.target][skeletonPosition.trackingID] as ExtendedSkeleton;
 						skeleton.update(skeletonPosition);
 						_onSkeletonUpdate.dispatch(skeleton);
 					}
@@ -354,7 +354,7 @@ package com.as3nui.airkinect.extended.manager {
 			var skeletonRemoveIndex:String;
 			for (skeletonRemoveIndex in _dispatcherLookup[e.target]) {
 				if (skeletonFrame.numSkeletons == 0 || trackedSkeletonIDs.indexOf(skeletonRemoveIndex) == -1) {
-					skeleton = _dispatcherLookup[e.target][skeletonRemoveIndex] as Skeleton;
+					skeleton = _dispatcherLookup[e.target][skeletonRemoveIndex] as ExtendedSkeleton;
 					_dispatcherLookup[e.target][skeletonRemoveIndex] = null;
 					delete _dispatcherLookup[e.target][skeletonRemoveIndex];
 					_onSkeletonRemoved.dispatch(skeleton);
@@ -367,13 +367,13 @@ package com.as3nui.airkinect.extended.manager {
 		 * Returns the next available skeleton in the current Dispatcher Lookup.
 		 * @return			The next skeleton available from a dispatcher
 		 */
-		public function getNextSkeleton():Skeleton {
+		public function getNextSkeleton():ExtendedSkeleton {
 			var skeletonIndex:String;
 			var dispatcher:Object;
 			for (dispatcher in _dispatcherLookup) {
 				for (skeletonIndex in _dispatcherLookup[dispatcher]) {
-					if (_dispatcherLookup[dispatcher][skeletonIndex] is Skeleton) {
-						return _dispatcherLookup[dispatcher][skeletonIndex] as Skeleton;
+					if (_dispatcherLookup[dispatcher][skeletonIndex] is ExtendedSkeleton) {
+						return _dispatcherLookup[dispatcher][skeletonIndex] as ExtendedSkeleton;
 					}
 				}
 			}
@@ -390,7 +390,7 @@ package com.as3nui.airkinect.extended.manager {
 			var dispatcher:Object;
 			for (dispatcher in _dispatcherLookup) {
 				for (skeletonIndex in _dispatcherLookup[dispatcher]) {
-					if (_dispatcherLookup[dispatcher][skeletonIndex] is Skeleton) {
+					if (_dispatcherLookup[dispatcher][skeletonIndex] is ExtendedSkeleton) {
 						count++;
 					}
 				}
@@ -398,14 +398,14 @@ package com.as3nui.airkinect.extended.manager {
 			return count;
 		}
 
-		public function currentSkeletons():Vector.<Skeleton> {
-			var skeletons:Vector.<Skeleton> = new <Skeleton>[];
+		public function currentSkeletons():Vector.<ExtendedSkeleton> {
+			var skeletons:Vector.<ExtendedSkeleton> = new <ExtendedSkeleton>[];
 			var skeletonIndex:String;
 			var dispatcher:Object;
 			for (dispatcher in _dispatcherLookup) {
 				for (skeletonIndex in _dispatcherLookup[dispatcher]) {
-					if (_dispatcherLookup[dispatcher][skeletonIndex] is Skeleton) {
-						skeletons.push(_dispatcherLookup[dispatcher][skeletonIndex] as Skeleton)
+					if (_dispatcherLookup[dispatcher][skeletonIndex] is ExtendedSkeleton) {
+						skeletons.push(_dispatcherLookup[dispatcher][skeletonIndex] as ExtendedSkeleton)
 					}
 				}
 			}
@@ -440,9 +440,9 @@ package com.as3nui.airkinect.extended.manager {
 			var skeletonIndex:String;
 			var dispatcher:EventDispatcher = event.target as EventDispatcher;
 			for (skeletonIndex in _dispatcherLookup[dispatcher]) {
-				if (_dispatcherLookup[dispatcher][skeletonIndex] is Skeleton) {
-					_onSkeletonRemoved.dispatch((_dispatcherLookup[dispatcher][skeletonIndex] as Skeleton));
-					(_dispatcherLookup[dispatcher][skeletonIndex] as Skeleton).dispose();
+				if (_dispatcherLookup[dispatcher][skeletonIndex] is ExtendedSkeleton) {
+					_onSkeletonRemoved.dispatch((_dispatcherLookup[dispatcher][skeletonIndex] as ExtendedSkeleton));
+					(_dispatcherLookup[dispatcher][skeletonIndex] as ExtendedSkeleton).dispose();
 				}
 			}
 			_onKinectDisconnected.dispatch();
@@ -505,9 +505,9 @@ package com.as3nui.airkinect.extended.manager {
 				var skeletonIndex:String;
 				if(!_dispatcherLookup) return;
 				for (skeletonIndex in _dispatcherLookup[dispatcher]) {
-					if (_dispatcherLookup[dispatcher][skeletonIndex] is Skeleton) {
-						_onSkeletonRemoved.dispatch((_dispatcherLookup[dispatcher][skeletonIndex] as Skeleton));
-						(_dispatcherLookup[dispatcher][skeletonIndex] as Skeleton).dispose();
+					if (_dispatcherLookup[dispatcher][skeletonIndex] is ExtendedSkeleton) {
+						_onSkeletonRemoved.dispatch((_dispatcherLookup[dispatcher][skeletonIndex] as ExtendedSkeleton));
+						(_dispatcherLookup[dispatcher][skeletonIndex] as ExtendedSkeleton).dispose();
 					}
 				}
 			}

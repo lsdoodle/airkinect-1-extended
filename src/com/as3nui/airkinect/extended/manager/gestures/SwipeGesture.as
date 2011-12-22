@@ -7,14 +7,14 @@
 package com.as3nui.airkinect.extended.manager.gestures {
 	import com.as3nui.airkinect.extended.manager.skeleton.DeltaResult;
 	import com.as3nui.airkinect.extended.manager.regions.Region;
-	import com.as3nui.airkinect.extended.manager.skeleton.Skeleton;
+	import com.as3nui.airkinect.extended.manager.skeleton.ExtendedSkeleton;
 
 	import flash.geom.Vector3D;
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
 
 	/**
-	 * Swipe gesture is defined as a element moving over a set velocity in some direction
+	 * Swipe gesture is defined as a joint moving over a set velocity in some direction
 	 * and then falling below another velocity. Swipes can be in any direction in space (left, right, forward back, up, down)
 	 */
 	public class SwipeGesture extends AbstractKinectGesture {
@@ -63,9 +63,9 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		public static const AXIS_Z:String				= "z";
 
 		/**
-		 * Element being tracked for Swipe
+		 * Joint being tracked for Swipe
 		 */
-		protected var _elementID:uint;
+		protected var _jointID:uint;
 
 		/**
 		 * Swipe Direction
@@ -96,15 +96,15 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		/**
 		 * Swipe Gestures supports 6 directions (3-Axis)
 		 * @param skeleton		Skeleton to use for skeleton tracking
-		 * @param elementID		ElementID to track for Swipes
+		 * @param jointID		JointID to track for Swipes
 		 * @param regions		Optional Regions to force start of gesture in
 		 * @param useX			Boolean for detecting Swipes on the X-Axis (Left/Right)
 		 * @param useY			Boolean for detecting Swipes on the Y-Axis (Up/Down)
 		 * @param useZ			Boolean for detecting Swipes on the Z-Axis (Forward/Back)
 		 */
-		public function SwipeGesture(skeleton:Skeleton, elementID:uint, regions:Vector.<Region> = null, useX:Boolean = true, useY:Boolean = true, useZ:Boolean = true) {
+		public function SwipeGesture(skeleton:ExtendedSkeleton, jointID:uint, regions:Vector.<Region> = null, useX:Boolean = true, useY:Boolean = true, useZ:Boolean = true) {
 			super(skeleton, regions);
-			_elementID = elementID;
+			_jointID = jointID;
 
 			_processSwipeTests = new Dictionary();
 			_processSwipeTests[DeltaResult.LEFT] = {axis:AXIS_X, threshold:-.14};
@@ -195,8 +195,8 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		override public function update():void {
 			super.update();
 
-			//Calculates the delta change on the element
-			_currentDeltaResult = _skeleton.calculateDelta(_elementID, _historySteps);
+			//Calculates the delta change on the joint
+			_currentDeltaResult = _skeleton.calculateDelta(_jointID, _historySteps);
 
 			//If a direction is already determined
 			if (_currentSwipeDirection) {
@@ -222,9 +222,9 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		 */
 		override protected function beginGesture():void {
 			//Determins if this gesture has begun out of the region
-			updateElementStartedOutOfRegion(_elementID, _historySteps);
+			updateJointStartedOutOfRegion(_jointID, _historySteps);
 //			trace(_currentSwipeDirection + " : Started");
-//			trace("Out of Region :: " + _elementStartedOutOfRegion);
+//			trace("Out of Region :: " + _jointStartedOutOfRegion);
 			super.beginGesture();
 		}
 
@@ -249,7 +249,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		 */
 		override protected function completeGesture():void {
 			//IF the gesture began outside of the Region, cancel it
-			if (_elementStartedOutOfRegion) {
+			if (_jointStartedOutOfRegion) {
 //				trace("Gesture complete, but started out of region");
 				cancelGesture();
 				return;

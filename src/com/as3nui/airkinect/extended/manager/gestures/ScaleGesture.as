@@ -7,7 +7,7 @@
 package com.as3nui.airkinect.extended.manager.gestures {
 	import com.as3nui.airkinect.extended.manager.regions.Region;
 	import com.as3nui.airkinect.extended.manager.skeleton.DeltaResult;
-	import com.as3nui.airkinect.extended.manager.skeleton.Skeleton;
+	import com.as3nui.airkinect.extended.manager.skeleton.ExtendedSkeleton;
 
 	import flash.geom.Vector3D;
 
@@ -15,7 +15,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 	import flash.utils.getTimer;
 
 	/**
-	 * Swipe is defined as two elements moving away from each other (OUT) or towards eachother (IN).
+	 * Swipe is defined as two joints moving away from each other (OUT) or towards eachother (IN).
 	 */
 	public class ScaleGesture extends AbstractKinectGesture {
 
@@ -39,13 +39,13 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		 */
 		protected var _currentScaleType:String;
 		/**
-		 * Left Side element used for detection
+		 * Left Side joint used for detection
 		 */
-		protected var _leftElementID:uint;
+		protected var _leftJointID:uint;
 		/**
-		 * Right Side element used for detection
+		 * Right Side joint used for detection
 		 */
-		protected var _rightElementID:uint;
+		protected var _rightJointID:uint;
 
 		/**
 		 * Steps in history to check
@@ -53,9 +53,9 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		protected var _historySteps:int = 7;
 
 		/**
-		 * Collection of elements used in this gesture
+		 * Collection of joints used in this gesture
 		 */
-		protected var _elements:Vector.<uint>;
+		protected var _jointss:Vector.<uint>;
 
 		//Result from the time the gesture began
 		private var _startLeftDeltaResult:DeltaResult;
@@ -70,15 +70,15 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		/**
 		 * Scale gesture supports 2 directions (IN & OUT)
 		 * @param skeleton			Skeleton to track scale on
-		 * @param leftElementID		Left Element for Scale Gesture
-		 * @param rightElementID	Right Element for Scale Gesture
+		 * @param leftJointID		Left Joint for Scale Gesture
+		 * @param rightJointID		Right Joint for Scale Gesture
 		 * @param regions			Regions to force start of gesture into
 		 */
-		public function ScaleGesture(skeleton:Skeleton, leftElementID:uint,  rightElementID:uint,  regions:Vector.<Region> = null) {
+		public function ScaleGesture(skeleton:ExtendedSkeleton, leftJointID:uint,  rightJointID:uint,  regions:Vector.<Region> = null) {
 			super(skeleton, regions);
-			_leftElementID = leftElementID;
-			_rightElementID = rightElementID;
-			_elements = new <uint>[_leftElementID, _rightElementID];
+			_leftJointID = leftJointID;
+			_rightJointID = rightJointID;
+			_jointss = new <uint>[_leftJointID, _rightJointID];
 		}
 
 		/**
@@ -102,10 +102,10 @@ package com.as3nui.airkinect.extended.manager.gestures {
 				return;
 			}
 
-			//Delta of the left element
-			_currentLeftDeltaResult = _skeleton.calculateDelta(_leftElementID, _historySteps);
-			//Delta of the Right element
-			_currentRightDeltaResult= _skeleton.calculateDelta(_rightElementID, _historySteps);
+			//Delta of the left joint
+			_currentLeftDeltaResult = _skeleton.calculateDelta(_leftJointID, _historySteps);
+			//Delta of the Right joint
+			_currentRightDeltaResult= _skeleton.calculateDelta(_rightJointID, _historySteps);
 			//Distance between the deltas
 			_currentDistance = _currentRightDeltaResult.delta.subtract(_currentLeftDeltaResult.delta);
 
@@ -136,13 +136,13 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		}
 
 		override protected function beginGesture():void {
-			updateElementsStartedOutOfRegion(_elements, _historySteps);
+			updateJointsStartedOutOfRegion(_jointss, _historySteps);
 
 			_startLeftDeltaResult = _currentLeftDeltaResult;
 			_startRightDeltaResult = _currentRightDeltaResult;
 			_startDistance = _currentDistance;
 //			trace("Started");
-			//trace("Out of Region :: " + _elementStartedOutOfRegion);
+			//trace("Out of Region :: " + _jointStartedOutOfRegion);
 			super.beginGesture();
 		}
 
@@ -157,7 +157,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		}
 
 		override protected function completeGesture():void {
-			if (_elementStartedOutOfRegion) {
+			if (_jointStartedOutOfRegion) {
 //				trace("Gesture complete, but started out of region");
 				cancelGesture();
 				return;

@@ -5,37 +5,36 @@
  * Time: 11:03 AM
  */
 package com.as3nui.airkinect.extended.manager.regions {
-	import com.as3nui.airkinect.extended.manager.skeleton.Skeleton;
-
-	import flash.geom.Vector3D;
+	import com.as3nui.airkinect.extended.manager.skeleton.ExtendedSkeleton;
+	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonJoint;
 
 	/**
-	 * Tracked Region is used to attach a region relative to any element on a skeleton
-	 * Positions are then defined relative to the elements positions.
-	 * For example a top of -1 and bottom of 1 attached to any element would always contain the full
-	 * height of the Kinect. a top of -.5 would always be half the height upwards from the current element, and so on.
+	 * Tracked Region is used to attach a region relative to any joint on a skeleton
+	 * Positions are then defined relative to the joints positions.
+	 * For example a top of -1 and bottom of 1 attached to any joint would always contain the full
+	 * height of the Kinect. a top of -.5 would always be half the height upwards from the current joint, and so on.
 	 */
 	public class TrackedRegion extends Region {
-		private var _skeleton:Skeleton;
-		private var _elementID:uint;
+		private var _skeleton:ExtendedSkeleton;
+		private var __jointID:uint;
 
-		private var _element:Vector3D;
+		private var _joint:AIRKinectSkeletonJoint;
 
 		/**
 		 * Creates a New Tracked region
 		 * @param skeleton		Skeleton to attach region to
-		 * @param elementID		Element to track
-		 * @param top			Top position relative to Element position
-		 * @param left			Left position relative to Element position
-		 * @param bottom		Bottom position relative to Element position
-		 * @param right			Right position relative to Element position
-		 * @param front			Front position relative to Element position
-		 * @param back			Back position relative to Element position
+		 * @param jointID		Joint to track
+		 * @param top			Top position relative to Joint position
+		 * @param left			Left position relative to Joint position
+		 * @param bottom		Bottom position relative to Joint position
+		 * @param right			Right position relative to Joint position
+		 * @param front			Front position relative to Joint position
+		 * @param back			Back position relative to Joint position
 		 */
-		public function TrackedRegion(skeleton:Skeleton, elementID:uint, top:Number, left:Number, bottom:Number, right:Number, front:Number, back:Number):void {
+		public function TrackedRegion(skeleton:ExtendedSkeleton, jointID:uint, top:Number, left:Number, bottom:Number, right:Number, front:Number, back:Number):void {
 			super(top, left, bottom, right, front, back);
 			_skeleton = skeleton;
-			_elementID = elementID;
+			__jointID = jointID;
 		}
 
 		/**
@@ -43,57 +42,57 @@ package com.as3nui.airkinect.extended.manager.regions {
 		 */
 		public function dispose():void {
 			_skeleton = null;
-			_elementID = NaN;
+			__jointID = NaN;
 		}
 
 		/**
-		 * Returns the top position based on the elements position plus the relative offset
+		 * Returns the top position based on the joints position plus the relative offset
 		 */
 		override public function get top():Number {
-			_element = _skeleton.getElement(_elementID);
-			return _element.y + _top;
+			_joint = _skeleton.getJoint(__jointID);
+			return _joint.y + _top;
 		}
 
 		/**
-		 * Returns the left position based on the elements position plus the relative offset
+		 * Returns the left position based on the joints position plus the relative offset
 		 */
 		override public function get left():Number {
-			_element = _skeleton.getElement(_elementID);
-			return _element.x + _left;
+			_joint = _skeleton.getJoint(__jointID);
+			return _joint.x + _left;
 		}
 
 		/**
-		 * Returns the bottom position based on the elements position plus the relative offset
+		 * Returns the bottom position based on the joints position plus the relative offset
 		 */
 		override public function get bottom():Number {
-			_element = _skeleton.getElement(_elementID);
-			return _element.y + _bottom;
+			_joint = _skeleton.getJoint(__jointID);
+			return _joint.y + _bottom;
 		}
 
 		/**
-		 * Returns the right position based on the elements position plus the relative offset
+		 * Returns the right position based on the joints position plus the relative offset
 		 */
 		override public function get right():Number {
-			_element = _skeleton.getElement(_elementID);
-			return _element.x + _right;
+			_joint = _skeleton.getJoint(__jointID);
+			return _joint.x + _right;
 		}
 
 		/**
-		 * Returns the back position based on the elements position plus the relative offset
+		 * Returns the back position based on the joints position plus the relative offset
 		 */
 		override public function get back():Number {
-			_element = _skeleton.getElement(_elementID);
-			if (_element.z + _back > 4) return 4;
-			return _element.z + _back;
+			_joint = _skeleton.getJoint(__jointID);
+			if (_joint.z + _back > 4) return 4;
+			return _joint.z + _back;
 		}
 
 		/**
-		 * Returns the front position based on the elements position plus the relative offset
+		 * Returns the front position based on the joints position plus the relative offset
 		 */
 		override public function get front():Number {
-			_element = _skeleton.getElement(_elementID);
-			if (_element.z + _front < 0) return 0;
-			return _element.z + _front;
+			_joint = _skeleton.getJoint(__jointID);
+			if (_joint.z + _front < 0) return 0;
+			return _joint.z + _front;
 		}
 	}
 }

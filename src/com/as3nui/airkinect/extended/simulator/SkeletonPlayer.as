@@ -5,14 +5,14 @@
  * Time: 4:39 PM
  */
 package com.as3nui.airkinect.extended.simulator {
-	import com.as3nui.nativeExtensions.kinect.data.SkeletonFrame;
-	import com.as3nui.nativeExtensions.kinect.data.SkeletonPosition;
+	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeleton;
+	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonJoint;
+	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonFrame;
 	import com.as3nui.nativeExtensions.kinect.events.SkeletonFrameEvent;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.geom.Vector3D;
 	import flash.utils.getTimer;
 
 	/**
@@ -123,7 +123,7 @@ package com.as3nui.airkinect.extended.simulator {
 			_pulseSprite.removeEventListener(Event.ENTER_FRAME, onUpdate);
 			_state = STOPPED;
 
-			var skeletonFrame:SkeletonFrame = new SkeletonFrame(new Vector.<SkeletonPosition>());
+			var skeletonFrame:AIRKinectSkeletonFrame = new AIRKinectSkeletonFrame(new Vector.<AIRKinectSkeleton>());
 			this.dispatchEvent(new SkeletonFrameEvent(skeletonFrame));
 		}
 
@@ -147,28 +147,28 @@ package com.as3nui.airkinect.extended.simulator {
 			if (getTimer() > _lastDispatchedTime + _delay) {
 				_lastDispatchedTime = getTimer();
 
-				var skeletonPositions:Vector.<SkeletonPosition> = new <SkeletonPosition>[];
+				var skeletonPositions:Vector.<AIRKinectSkeleton> = new <AIRKinectSkeleton>[];
 				var currentFrame:XML = _currentXML..SkeletonFrame[_currentFrame];
-				var elements:Vector.<Vector3D>;
-				var elementXML:XML;
+				var joints:Vector.<AIRKinectSkeletonJoint>;
+				var jointXML:XML;
 				for each(var skeletonPositionXML:XML in currentFrame..SkeletonPosition) {
-					elements = new Vector.<Vector3D>(skeletonPositionXML..element.length());
-					for (var elementIndex:uint = 0; elementIndex < elements.length; elementIndex++) {
-						elementXML = skeletonPositionXML..element[elementIndex];
-						elements[parseInt(elementXML.@id)] = new Vector3D(parseFloat(elementXML.@x), parseFloat(elementXML.@y), parseFloat(elementXML.@z));
+					joints = new Vector.<AIRKinectSkeletonJoint>(skeletonPositionXML..joint.length());
+					for (var jointIndex:uint = 0; jointIndex < joints.length; jointIndex++) {
+						jointXML = skeletonPositionXML..joint[jointIndex];
+						joints[parseInt(jointXML.@id)] = new AIRKinectSkeletonJoint(parseFloat(jointXML.@x), parseFloat(jointXML.@y), parseFloat(jointXML.@z));
 					}
 
-					var skeletonPosition:SkeletonPosition = new SkeletonPosition(
+					var skeletonPosition:AIRKinectSkeleton = new AIRKinectSkeleton(
 							parseInt(skeletonPositionXML.@frame),
 							parseInt(skeletonPositionXML.@timestamp),
 							parseInt(skeletonPositionXML.@trackingID),
 							parseInt(skeletonPositionXML.@trackingState),
-							elements);
+							joints);
 
 					skeletonPositions.push(skeletonPosition);
 				}
 
-				var skeletonFrame:SkeletonFrame = new SkeletonFrame(skeletonPositions);
+				var skeletonFrame:AIRKinectSkeletonFrame = new AIRKinectSkeletonFrame(skeletonPositions);
 				this.dispatchEvent(new SkeletonFrameEvent(skeletonFrame));
 
 				_currentFrame++;

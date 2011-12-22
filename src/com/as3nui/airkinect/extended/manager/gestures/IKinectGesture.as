@@ -6,7 +6,7 @@
  */
 package com.as3nui.airkinect.extended.manager.gestures {
 	import com.as3nui.airkinect.extended.manager.regions.Region;
-	import com.as3nui.airkinect.extended.manager.skeleton.Skeleton;
+	import com.as3nui.airkinect.extended.manager.skeleton.ExtendedSkeleton;
 
 	import org.osflash.signals.Signal;
 
@@ -21,7 +21,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 
 		function get priority():uint;
 
-		function get skeleton():Skeleton;
+		function get skeleton():ExtendedSkeleton;
 
 		function get currentState():String;
 

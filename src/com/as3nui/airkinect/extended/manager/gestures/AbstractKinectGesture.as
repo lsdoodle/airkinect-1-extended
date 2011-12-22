@@ -6,9 +6,8 @@
  */
 package com.as3nui.airkinect.extended.manager.gestures {
 	import com.as3nui.airkinect.extended.manager.regions.Region;
-	import com.as3nui.airkinect.extended.manager.skeleton.Skeleton;
-
-	import flash.geom.Vector3D;
+	import com.as3nui.airkinect.extended.manager.skeleton.ExtendedSkeleton;
+	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonJoint;
 
 	import org.osflash.signals.Signal;
 
@@ -27,7 +26,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		protected var _onGestureReset:Signal;
 
 		//Skeleton the gesture is attrached to
-		protected var _skeleton:Skeleton;
+		protected var _skeleton:ExtendedSkeleton;
 
 		//Regions the gesture is bound to start inside of
 		protected var _regions:Vector.<Region>;
@@ -36,7 +35,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		protected var _currentState:String;
 
 		//Boolean telling if the Gesture has started outside of any region in _regions
-		protected var _elementStartedOutOfRegion:Boolean;
+		protected var _jointStartedOutOfRegion:Boolean;
 
 		//priority used to detemrine which gestures have priority over others.
 		protected var _priority:uint;
@@ -48,7 +47,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		 * @param priority		priority determines if a getsure cancles other gestures. Exmaple. a gesture of priority 2 will occur and cancel any gestures of priority 1.
 		 * 						gestures of the same priority will all get dispatched. Default is 0
 		 */
-		public function AbstractKinectGesture(skeleton:Skeleton, regions:Vector.<Region> = null, priority:uint = 0) {
+		public function AbstractKinectGesture(skeleton:ExtendedSkeleton, regions:Vector.<Region> = null, priority:uint = 0) {
 			_onGestureBegin = new Signal();
 			_onGestureProgress = new Signal();
 			_onGestureComplete = new Signal();
@@ -126,38 +125,38 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		}
 
 		/**
-		 * Updates local variable _elementStartedOutOfRegion if the current element is outside of any region specified.
-		 * @param elementID		Element to check
+		 * Updates local variable _jointStartedOutOfRegion if the current joint is outside of any region specified.
+		 * @param jointID		Joint to check
 		 * @param steps			Steps in history to check
 		 */
-		protected function updateElementStartedOutOfRegion(elementID:uint, steps:uint):void {
-			_elementStartedOutOfRegion = false;
-			var elementPosition:Vector3D;
+		protected function updateJointStartedOutOfRegion(jointID:uint, steps:uint):void {
+			_jointStartedOutOfRegion = false;
+			var jointPosition:AIRKinectSkeletonJoint;
 
-			elementPosition = _skeleton.getPositionInHistory(elementID, steps);
+			jointPosition = _skeleton.getPositionInHistory(jointID, steps);
 
 			for each(var region:Region in _regions) {
-				if (!region.contains3D(elementPosition)) {
-					_elementStartedOutOfRegion = true;
+				if (!region.contains3D(jointPosition)) {
+					_jointStartedOutOfRegion = true;
 					return;
 				}
 			}
 		}
 
 		/**
-		 * Updates local variable _elementStartedOutOfRegion if any of the elements provided are outside of any region specified.
-		 * @param elements
+		 * Updates local variable _jointStartedOutOfRegion if any of the joints provided are outside of any region specified.
+		 * @param jointIDs
 		 * @param steps
 		 */
-		protected function updateElementsStartedOutOfRegion(elements:Vector.<uint>, steps:uint):void {
-			_elementStartedOutOfRegion = false;
-			var elementPosition:Vector3D;
-			for each(var elementID:uint in elements) {
-				elementPosition = _skeleton.getPositionInHistory(elementID, steps);
+		protected function updateJointsStartedOutOfRegion(jointIDs:Vector.<uint>, steps:uint):void {
+			_jointStartedOutOfRegion = false;
+			var jointPosition:AIRKinectSkeletonJoint;
+			for each(var jointID:uint in jointIDs) {
+				jointPosition = _skeleton.getPositionInHistory(jointID, steps);
 
 				for each(var region:Region in _regions) {
-					if (!region.contains3D(elementPosition)) {
-						_elementStartedOutOfRegion = true;
+					if (!region.contains3D(jointPosition)) {
+						_jointStartedOutOfRegion = true;
 						return;
 					}
 				}
@@ -167,7 +166,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		/**
 		 * Returns the current skeleon being used for this gesture
 		 */
-		public function get skeleton():Skeleton {
+		public function get skeleton():ExtendedSkeleton {
 			return _skeleton;
 		}
 

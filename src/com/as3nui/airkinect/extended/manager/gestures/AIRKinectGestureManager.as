@@ -5,7 +5,7 @@
  * Time: 6:52 PM
  */
 package com.as3nui.airkinect.extended.manager.gestures {
-	import com.as3nui.airkinect.extended.manager.skeleton.Skeleton;
+	import com.as3nui.airkinect.extended.manager.skeleton.ExtendedSkeleton;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -62,7 +62,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		 * @param skeleton		Skeleton to remove gestures of
 		 * @return				Number of gestures removed from the skeleton
 		 */
-		public static function removeAllGestures(skeleton:Skeleton):uint {
+		public static function removeAllGestures(skeleton:ExtendedSkeleton):uint {
 			return instance.removeAllGestures(skeleton);
 		}
 
@@ -140,7 +140,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		 * @param skeleton		Skeleton to remove gesture from
 		 * @return				Number of gestures removed
 		 */
-		public function removeAllGestures(skeleton:Skeleton):uint {
+		public function removeAllGestures(skeleton:ExtendedSkeleton):uint {
 			var remainingGestures:Array = [];
 			var count:uint = 0;
 			for each(var gesture:IKinectGesture in this._gestures) {
@@ -160,7 +160,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		 * updates the gestures through the different gesture states
 		 */
 		private function updateGestures():void {
-			var skeletonsWithGestures:Vector.<Skeleton> = new Vector.<Skeleton>();
+			var skeletonsWithGestures:Vector.<ExtendedSkeleton> = new Vector.<ExtendedSkeleton>();
 			var executedGesturePriority:uint = 0;
 
 			for each(var gesture:IKinectGesture in this._gestures) {
