@@ -1,0 +1,12 @@
+set flex_path="c:\path\to\flexsdk\"
+set source_path="../../src"
+:: required libs are AIRKinect.swc and Signals.swc
+set libs_path="../../libs"
+
+@ECHO OFF
+cls
+%flex_path%\bin\aasdoc ^
+-doc-sources %source_path% ^
+-library-path+=%libs_path% ^
+-main-title "AIRKinect API Documentation" ^
+-output bin

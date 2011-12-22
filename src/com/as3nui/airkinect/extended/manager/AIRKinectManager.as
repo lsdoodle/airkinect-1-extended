@@ -23,7 +23,7 @@ package com.as3nui.airkinect.extended.manager {
 	import org.osflash.signals.Signal;
 
 	/**
-	 * AIRKinectManager is a singleton Class used to manage Skeletons, RGB Frames & Depth Frames.
+	 * AIRKinectManager is a singleton Class used to manage Skeletons, RGB Frames and Depth Frames.
 	 * Manger should be initialized prior to use
 	 * <p>
 	 * <code>
@@ -306,7 +306,7 @@ package com.as3nui.airkinect.extended.manager {
 		}
 
 		/**
-		 * Cleans up Dispatcher & Skeleton Lookup
+		 * Cleans up Dispatcher and Skeleton Lookup
 		 */
 		protected function cleanupSkeletons():void {
 			var skeletonIndex:String;

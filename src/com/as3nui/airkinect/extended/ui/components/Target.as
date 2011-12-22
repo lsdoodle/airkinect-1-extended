@@ -26,7 +26,7 @@ package com.as3nui.airkinect.extended.ui.components {
 	 *	<ul>
 	 *		<li>Cursor Over</li>
 	 *		<li>Cursor Turned invisible</li>
-	 *		<li>Selection Timer placed at location of cursor<li>
+	 *		<li>Selection Timer placed at location of cursor</li>
 	 *		<li>Selection Timer Started</li>
 	 *		<li>(optional, if moved) Cursor movement mapped to selection timer movement</li>
 	 * 		<li>Selection Time Complete (dispatches selected event)</li>

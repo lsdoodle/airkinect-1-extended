@@ -41,6 +41,7 @@ package com.as3nui.airkinect.extended.ui.objects {
 	 *     //This will usually run on Enterframe or SkeletonFrameUpdate
 	 *     _leftHandCursor.update(newX, newY, newZ);
 	 * </code>
+	 * </p>
 	 */
 	public class Cursor {
 

@@ -68,7 +68,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 		private var _currentDistance:Vector3D;
 
 		/**
-		 * Scale gesture supports 2 directions (IN & OUT)
+		 * Scale gesture supports 2 directions (IN and OUT)
 		 * @param skeleton			Skeleton to track scale on
 		 * @param leftJointID		Left Joint for Scale Gesture
 		 * @param rightJointID		Right Joint for Scale Gesture

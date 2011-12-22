@@ -25,7 +25,7 @@ package com.as3nui.airkinect.extended.ui.components {
 	 * 		<li>Move events dispatched (value is progress from 0-1)</li>
 	 * 		<li>Handle reaches end of track (dispatched sleected event)</li>
 	 * 		<li>Cursor is Released</li>
-	 * 		<li>Track is Hidden<li>
+	 * 		<li>Track is Hidden</li>
 	 * 	</ul>
 	 * </p>
 	 *
