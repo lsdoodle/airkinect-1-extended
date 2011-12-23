@@ -437,18 +437,21 @@ package com.as3nui.airkinect.extended.manager {
 		 */
 		private function onKinectDisconnection(event:DeviceStatusEvent):void {
 			trace("Kinect Manager :: Disconnection");
-			var skeletonIndex:String;
-			var dispatcher:EventDispatcher = event.target as EventDispatcher;
-			for (skeletonIndex in _dispatcherLookup[dispatcher]) {
-				if (_dispatcherLookup[dispatcher][skeletonIndex] is ExtendedSkeleton) {
-					_onSkeletonRemoved.dispatch((_dispatcherLookup[dispatcher][skeletonIndex] as ExtendedSkeleton));
-					(_dispatcherLookup[dispatcher][skeletonIndex] as ExtendedSkeleton).dispose();
+			if(_isInitialized)
+			{
+				var skeletonIndex:String;
+				var dispatcher:EventDispatcher = event.target as EventDispatcher;
+				for (skeletonIndex in _dispatcherLookup[dispatcher]) {
+					if (_dispatcherLookup[dispatcher][skeletonIndex] is ExtendedSkeleton) {
+						_onSkeletonRemoved.dispatch((_dispatcherLookup[dispatcher][skeletonIndex] as ExtendedSkeleton));
+						(_dispatcherLookup[dispatcher][skeletonIndex] as ExtendedSkeleton).dispose();
+					}
 				}
+				_onKinectDisconnected.dispatch();
+	
+				_dispatcherLookup[dispatcher] = new Dictionary();
+				cleanupSkeletons();
 			}
-			_onKinectDisconnected.dispatch();
-
-			_dispatcherLookup[dispatcher] = new Dictionary();
-			cleanupSkeletons();
 		}
 
 		/**
