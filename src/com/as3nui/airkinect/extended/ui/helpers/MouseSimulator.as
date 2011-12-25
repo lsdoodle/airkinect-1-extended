@@ -8,7 +8,10 @@ package com.as3nui.airkinect.extended.ui.helpers {
 	import com.as3nui.airkinect.extended.ui.managers.UIManager;
 	import com.as3nui.airkinect.extended.ui.objects.Cursor;
 
+	import flash.display.Sprite;
+
 	import flash.display.Stage;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.ui.Mouse;
 
@@ -27,6 +30,18 @@ package com.as3nui.airkinect.extended.ui.helpers {
 		protected static var _hasBeenAdded:Boolean;
 		protected static var _mouseCursor:Cursor;
 		protected static var _enabled:Boolean;
+		
+		private static var PUSH:String = "push";
+		private static var PULL:String = "pull";
+		
+		protected static var _currentSimulationType:String;
+		protected static var _pulseSprite:Sprite;
+
+		private static var _pushThreshold:Number = 2.5;
+		private static var _pushIncriment:Number = .01;
+
+		private static var _mouseIdleZ:int = 3;
+		protected static var _currentZ:Number;
 
 		/**
 		 * Initializes the Mouse Simulator by creating a cursor for your mouse and attempting to add it to the UIManager.
@@ -38,6 +53,7 @@ package com.as3nui.airkinect.extended.ui.helpers {
 			_stage = stage;
 			_hasBeenAdded = false;
 			_mouseCursor = new Cursor("_mouse_", 1, new MouseGraphic());
+			_pulseSprite = new Sprite();
 			enable();
 		}
 
@@ -49,6 +65,7 @@ package com.as3nui.airkinect.extended.ui.helpers {
 			removeMouseCursor();
 			_mouseCursor = null;
 			_stage = null;
+			_pulseSprite = null;
 		}
 
 		/**
@@ -58,8 +75,10 @@ package com.as3nui.airkinect.extended.ui.helpers {
 			if(_enabled) return;
 
 			_enabled = true;
+			_currentZ = _mouseIdleZ;
 			Mouse.hide();
 			_stage.addEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
+			_stage.addEventListener(MouseEvent.CLICK, handleMouseClick);
 			if(UIManager.isInitialized) addMouseCursor();
 		}
 
@@ -69,17 +88,53 @@ package com.as3nui.airkinect.extended.ui.helpers {
 		public static function disable():void {
 			if(!_enabled) return;
 			_enabled = false;
+			if(simulatingMove) stopSimulation();
 
 			Mouse.show();
 			_stage.removeEventListener(MouseEvent.MOUSE_MOVE, handleMouseMove);
+			_stage.removeEventListener(MouseEvent.CLICK, handleMouseClick);
+			_pulseSprite.removeEventListener(Event.ENTER_FRAME, onPulseUpdate);
 			if(UIManager.isInitialized) removeMouseCursor();
 		}
 
 		private static function handleMouseMove(event:MouseEvent):void {
 			_mouseCursor.x = event.stageX / _stage.stageWidth;
 			_mouseCursor.y = event.stageY / _stage.stageHeight;
+			_mouseCursor.z = _currentZ;
 
 			if(UIManager.isInitialized && !_hasBeenAdded) addMouseCursor();
+		}
+
+		private static function handleMouseClick(event:MouseEvent):void {
+			_currentSimulationType = event.shiftKey ? PULL : PUSH;
+			startSimulation();
+		}
+
+		private static function startSimulation():void {
+			if(simulatingMove) return;
+			_currentZ = _mouseIdleZ;
+			_pulseSprite.addEventListener(Event.ENTER_FRAME, onPulseUpdate);
+		}
+
+		private static function stopSimulation():void {
+			_currentZ = _mouseIdleZ;
+			_pulseSprite.removeEventListener(Event.ENTER_FRAME, onPulseUpdate);
+		}
+
+		private static function onPulseUpdate(event:Event):void {
+			if(_currentSimulationType == PUSH){
+				_currentZ -= _pushIncriment;
+				if(_currentZ <= _pushThreshold) _currentSimulationType = PULL
+			}else{
+				_currentZ += _pushIncriment;
+				if(_currentZ >= _mouseIdleZ) stopSimulation();
+			}
+
+			_mouseCursor.z = _currentZ;
+		}
+
+		private static function get simulatingMove():Boolean {
+			return _pulseSprite.hasEventListener(Event.ENTER_FRAME);
 		}
 
 		private static function addMouseCursor():void {
