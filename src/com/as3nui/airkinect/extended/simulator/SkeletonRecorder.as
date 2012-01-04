@@ -5,58 +5,59 @@
  * Time: 2:19 PM
  */
 package com.as3nui.airkinect.extended.simulator {
+	import com.as3nui.airkinect.extended.simulator.data.TimeCodedSkeletonFrame;
 	import com.as3nui.nativeExtensions.kinect.AIRKinect;
 	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeleton;
-	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonJoint;
 	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonFrame;
+	import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonJoint;
 	import com.as3nui.nativeExtensions.kinect.events.SkeletonFrameEvent;
 
 	import flash.events.EventDispatcher;
 	import flash.utils.getTimer;
 
 	/**
-	 * Skeleton Recorder is used to capture Skeleton Frames from the Kinect and record them. 
+	 * Skeleton Recorder is used to capture Skeleton Frames from the Kinect and record them.
 	 * Upon completion data can be retrieved as XML
 	 */
 	public class SkeletonRecorder extends EventDispatcher {
 		/**
 		 * Stopped state of recording
 		 */
-		public static const STOPPED:String 		= "stopped";
-		
+		public static const STOPPED:String = "stopped";
+
 		/**
 		 * Recording State of Recorder
 		 */
-		public static const RECORDING:String 	= "recording";
+		public static const RECORDING:String = "recording";
 
 		/**
 		 * Paused state of recorder
 		 */
-		public static const PAUSED:String 		= "paused";
+		public static const PAUSED:String = "paused";
 
 		/**
 		 * Current recorder state
 		 */
-		private var _state:String = STOPPED;
+		protected var _state:String = STOPPED;
 
 		/**
 		 * A vector of TimeCodedSkeletonFrames that have been recorded
 		 */
-		private var _currentRecording:Vector.<TimeCodedSkeletonFrame>;
+		protected var _currentRecording:Vector.<TimeCodedSkeletonFrame>;
 
 		/**
 		 * Time inwhich recording started
 		 */
-		private var _recordingStartTimer:int;
+		protected var _recordingStartTimer:int;
 		/**
 		 * Duration of the recording
 		 */
-		private var _recordedDuration:int;
-		
+		protected var _recordedDuration:int;
+
 		/**
 		 * Whether recording should ignore empty skeleton frames.
 		 */
-		private var _ignoreEmptyFrames:Boolean;
+		protected var _ignoreEmptyFrames:Boolean;
 
 		/**
 		 * Skeleton Recorder constructor
@@ -70,7 +71,7 @@ package com.as3nui.airkinect.extended.simulator {
 		 * Starts recording Skeleton Frames from the Kinect
 		 */
 		public function record():void {
-			if(recording) return;
+			if (recording) return;
 			//If stopped start a new recording
 			if (_state == STOPPED) clear();
 			_recordingStartTimer = getTimer();
@@ -82,7 +83,7 @@ package com.as3nui.airkinect.extended.simulator {
 		 * Pauses the recorder
 		 */
 		public function pause():void {
-			if(!recording) return;
+			if (!recording) return;
 			_state = PAUSED;
 			AIRKinect.removeEventListener(SkeletonFrameEvent.UPDATE, onSkeletonFrame);
 		}
@@ -91,7 +92,7 @@ package com.as3nui.airkinect.extended.simulator {
 		 * Stops the recording
 		 */
 		public function stop():void {
-			if(!recording) return;
+			if (!recording) return;
 			_state = STOPPED;
 			_recordedDuration = getTimer() - _recordingStartTimer;
 			AIRKinect.removeEventListener(SkeletonFrameEvent.UPDATE, onSkeletonFrame);
@@ -108,7 +109,7 @@ package com.as3nui.airkinect.extended.simulator {
 		 * Event handler for Skeleton from from Kinect. Adds frame to recorded buffer
 		 * @param event		SkeletonFrameEvent
 		 */
-		private function onSkeletonFrame(event:SkeletonFrameEvent):void {
+		protected function onSkeletonFrame(event:SkeletonFrameEvent):void {
 			if (!_ignoreEmptyFrames || event.skeletonFrame.numSkeletons > 0) {
 				_currentRecording.push(new TimeCodedSkeletonFrame(getTimer(), event.skeletonFrame));
 			}
@@ -125,10 +126,10 @@ package com.as3nui.airkinect.extended.simulator {
 		 * Returns the current Recording in XML format
 		 */
 		public function get currentRecordingXML():XML {
-			if(_state != STOPPED) return null;
+			if (_state != STOPPED) return null;
 			var xml:XML = <AIRKinectRecording/>;
-			xml.@duration 			= _recordedDuration;
-			xml.@recordStartTime 	= _recordingStartTimer;
+			xml.@duration = _recordedDuration;
+			xml.@recordStartTime = _recordingStartTimer;
 
 			var joint:AIRKinectSkeletonJoint;
 			var frameXML:XML;
@@ -140,15 +141,15 @@ package com.as3nui.airkinect.extended.simulator {
 				skeletonFrame = timeCodedSkeletonFrame.skeletonFrame;
 				frameXML = <SkeletonFrame/>;
 				frameXML.@recordedTime = timeCodedSkeletonFrame.time;
-				for each(var skeletonPosition:AIRKinectSkeleton in skeletonFrame.skeletonsPositions) {
-					positionXML = <SkeletonPosition/>;
-					positionXML.@trackingID = skeletonPosition.trackingID;
-					positionXML.@timestamp = skeletonPosition.timestamp;
-					positionXML.@frame = skeletonPosition.frameNumber;
-					positionXML.@trackingState = skeletonPosition.trackingState;
+				for each(var skeleton:AIRKinectSkeleton in skeletonFrame.skeletons) {
+					positionXML = <Skeleton/>;
+					positionXML.@trackingID = skeleton.trackingID;
+					positionXML.@timestamp = skeleton.timestamp;
+					positionXML.@frame = skeleton.frameNumber;
+					positionXML.@trackingState = skeleton.trackingState;
 
-					for (var jointIndex:uint = 0; jointIndex < skeletonPosition.joints.length; jointIndex++) {
-						joint = skeletonPosition.getJointRaw(jointIndex);
+					for (var jointIndex:uint = 0; jointIndex < skeleton.joints.length; jointIndex++) {
+						joint = skeleton.getJointRaw(jointIndex);
 						jointXML = <joint/>;
 						jointXML.@id = jointIndex;
 						jointXML.@x = joint.x.toString();
@@ -201,28 +202,5 @@ package com.as3nui.airkinect.extended.simulator {
 		public function set ignoreEmptyFrames(value:Boolean):void {
 			_ignoreEmptyFrames = value;
 		}
-	}
-}
-
-import com.as3nui.nativeExtensions.kinect.data.AIRKinectSkeletonFrame;
-
-/**
- * Timecoded Skeleton Frame is used to associate a Skeleton Frame with the time of a recording.
- */
-class TimeCodedSkeletonFrame {
-	private var _time:uint;
-	private var _skeletonFrame:AIRKinectSkeletonFrame;
-
-	public function TimeCodedSkeletonFrame(time:uint, skeletonFrame:AIRKinectSkeletonFrame):void {
-		_time = time;
-		_skeletonFrame = skeletonFrame;
-	}
-
-	public function get time():uint {
-		return _time;
-	}
-
-	public function get skeletonFrame():AIRKinectSkeletonFrame {
-		return _skeletonFrame;
 	}
 }

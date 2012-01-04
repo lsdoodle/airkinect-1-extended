@@ -27,7 +27,7 @@ package com.as3nui.airkinect.extended.manager.skeleton {
 		/**
 		 * History of this skeletons positions
 		 */
-		private var _skeletonPositionsHistory:Vector.<AIRKinectSkeleton>;
+		private var _skeletonHistory:Vector.<AIRKinectSkeleton>;
 		/**
 		 * Current Position of this skeleton
 		 */
@@ -39,30 +39,30 @@ package com.as3nui.airkinect.extended.manager.skeleton {
 
 		/**
 		 * Creates a new skeleton
-		 * @param skeletonPosition		Option position to set this skeleton at
+		 * @param skeleton		Option position to set this skeleton at
 		 */
-		public function ExtendedSkeleton(skeletonPosition:AIRKinectSkeleton = null) {
-			_skeletonPositionsHistory = new Vector.<AIRKinectSkeleton>();
-			if (skeletonPosition) update(skeletonPosition)
+		public function ExtendedSkeleton(skeleton:AIRKinectSkeleton = null) {
+			_skeletonHistory = new Vector.<AIRKinectSkeleton>();
+			if (skeleton) update(skeleton)
 		}
 
 		/**
 		 * Cleans up the history for this skeleton
 		 */
 		public function dispose():void {
-			_skeletonPositionsHistory = new Vector.<AIRKinectSkeleton>();
+			_skeletonHistory = new Vector.<AIRKinectSkeleton>();
 		}
 
 		/**
 		 * Updates the current position for the skeleton, recording the previous position
 		 * into the history lookup
-		 * @param skeletonPosition		SkeletonPosition to update skeleton to
+		 * @param skeleton			AIRKinectSkeleton to update skeleton to
 		 */
-		public function update(skeletonPosition:AIRKinectSkeleton):void {
-			_currentSkeletonData = skeletonPosition;
-			_skeletonPositionsHistory.unshift(skeletonPosition);
+		public function update(skeleton:AIRKinectSkeleton):void {
+			_currentSkeletonData = skeleton;
+			_skeletonHistory.unshift(skeleton);
 
-			while(_skeletonPositionsHistory.length > SKELETON_DATA_HISTORY_DEPTH) _skeletonPositionsHistory.pop();
+			while(_skeletonHistory.length > SKELETON_DATA_HISTORY_DEPTH) _skeletonHistory.pop();
 		}
 
 		/**
@@ -75,8 +75,8 @@ package com.as3nui.airkinect.extended.manager.skeleton {
 		/**
 		 * Returns all the positions current in the History buffer for this skeleton
 		 */
-		public function get skeletonPositionsHistory():Vector.<AIRKinectSkeleton> {
-			return _skeletonPositionsHistory;
+		public function get skeletonHistory():Vector.<AIRKinectSkeleton> {
+			return _skeletonHistory;
 		}
 
 		/**
@@ -88,10 +88,10 @@ package com.as3nui.airkinect.extended.manager.skeleton {
 		 * @return				AIRKinectSkeletonJoint of joints position at steps back in time
 		 */
 		public function getPositionInHistory(jointID:uint, step:uint):AIRKinectSkeletonJoint {
-			if(_skeletonPositionsHistory.length <= step ){
+			if(_skeletonHistory.length <= step ){
 				return _emptyResult;
 			}else{
-				return _skeletonPositionsHistory[step].getJoint(jointID);
+				return _skeletonHistory[step].getJoint(jointID);
 			}
 		}
 
@@ -120,7 +120,7 @@ package com.as3nui.airkinect.extended.manager.skeleton {
 			if(jointIDs.length != steps.length) throw new Error("Joints and Steps vectors must be of same length");
 
 			var jointLookup:Dictionary = new Dictionary();
-			if(_skeletonPositionsHistory == null) return jointLookup;
+			if(_skeletonHistory == null) return jointLookup;
 			var jointIndex:uint;
 
 			var jointID:uint;
@@ -129,7 +129,7 @@ package com.as3nui.airkinect.extended.manager.skeleton {
 				jointLookup[jointID] = new Dictionary();
 			}
 			
-			var skeletonPositionInTime:AIRKinectSkeleton;
+			var skeletonInTime:AIRKinectSkeleton;
 			var jointPositionInTime:AIRKinectSkeletonJoint;
 			var currentAxisPosition:AIRKinectSkeletonJoint;
 			var currentJointStep:uint;
@@ -140,11 +140,11 @@ package com.as3nui.airkinect.extended.manager.skeleton {
 				currentAxisPosition = getJoint(jointID);
 				for(stepIndex=0; stepIndex<steps[jointIndex].length;stepIndex++){
 					currentJointStep = steps[jointIndex][stepIndex];
-					if(_skeletonPositionsHistory.length <= currentJointStep ){
+					if(_skeletonHistory.length <= currentJointStep ){
 						jointLookup[jointID][currentJointStep] = new DeltaResult(jointID, currentJointStep, _emptyResult);
 					}else{
-						skeletonPositionInTime = _skeletonPositionsHistory[currentJointStep];
-						jointPositionInTime = skeletonPositionInTime.getJoint(jointID);
+						skeletonInTime = _skeletonHistory[currentJointStep];
+						jointPositionInTime = skeletonInTime.getJoint(jointID);
 						jointLookup[jointID][currentJointStep] = new DeltaResult(jointID, currentJointStep, currentAxisPosition.subtract(jointPositionInTime));
 					}
 				}

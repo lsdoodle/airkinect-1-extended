@@ -16,7 +16,7 @@ package com.as3nui.airkinect.extended.manager.gestures {
 	 * For exmaple
 	 * <p>
 	 * <code>
-	 * 		var leftSwipeGesture:SwipeGesture = new SwipeGesture(skeleton, SkeletonPosition.HAND_LEFT, null, true, false, false);
+	 * 		var leftSwipeGesture:SwipeGesture = new SwipeGesture(skeleton, AIRKinectSkeleton.HAND_LEFT, null, true, false, false);
 	 *		AIRKinectGestureManager.addGesture(leftSwipeGesture);
 	 * </code>
 	 * </p>

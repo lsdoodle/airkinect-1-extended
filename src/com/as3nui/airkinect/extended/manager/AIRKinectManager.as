@@ -329,24 +329,24 @@ package com.as3nui.airkinect.extended.manager {
 			if (!_isInitialized) return;
 
 			var skeletonFrame:AIRKinectSkeletonFrame = e.skeletonFrame;
-			var skeletonPosition:AIRKinectSkeleton;
-			var skeleton:ExtendedSkeleton;
+			var skeleton:AIRKinectSkeleton;
+			var extendedSkeleton:ExtendedSkeleton;
 			var trackedSkeletonIDs:Vector.<uint> = new Vector.<uint>();
 
 			if (!_dispatcherLookup[e.target]) _dispatcherLookup[e.target] = new Dictionary();
 
 			if (skeletonFrame.numSkeletons > 0) {
 				for (var j:uint = 0; j < skeletonFrame.numSkeletons; j++) {
-					skeletonPosition = skeletonFrame.getSkeletonPosition(j);
-					trackedSkeletonIDs.push(skeletonPosition.trackingID);
+					skeleton = skeletonFrame.getSkeleton(j);
+					trackedSkeletonIDs.push(skeleton.trackingID);
 
-					if (_dispatcherLookup[e.target][skeletonPosition.trackingID] == null) {
-						skeleton = _dispatcherLookup[e.target][skeletonPosition.trackingID] = new ExtendedSkeleton(skeletonPosition);
-						_onSkeletonAdded.dispatch(skeleton);
+					if (_dispatcherLookup[e.target][skeleton.trackingID] == null) {
+						extendedSkeleton = _dispatcherLookup[e.target][skeleton.trackingID] = new ExtendedSkeleton(skeleton);
+						_onSkeletonAdded.dispatch(extendedSkeleton);
 					} else {
-						skeleton = _dispatcherLookup[e.target][skeletonPosition.trackingID] as ExtendedSkeleton;
-						skeleton.update(skeletonPosition);
-						_onSkeletonUpdate.dispatch(skeleton);
+						extendedSkeleton = _dispatcherLookup[e.target][skeleton.trackingID] as ExtendedSkeleton;
+						extendedSkeleton.update(skeleton);
+						_onSkeletonUpdate.dispatch(extendedSkeleton);
 					}
 				}
 			}
@@ -354,11 +354,11 @@ package com.as3nui.airkinect.extended.manager {
 			var skeletonRemoveIndex:String;
 			for (skeletonRemoveIndex in _dispatcherLookup[e.target]) {
 				if (skeletonFrame.numSkeletons == 0 || trackedSkeletonIDs.indexOf(skeletonRemoveIndex) == -1) {
-					skeleton = _dispatcherLookup[e.target][skeletonRemoveIndex] as ExtendedSkeleton;
+					extendedSkeleton = _dispatcherLookup[e.target][skeletonRemoveIndex] as ExtendedSkeleton;
 					_dispatcherLookup[e.target][skeletonRemoveIndex] = null;
 					delete _dispatcherLookup[e.target][skeletonRemoveIndex];
-					_onSkeletonRemoved.dispatch(skeleton);
-					skeleton.dispose();
+					_onSkeletonRemoved.dispatch(extendedSkeleton);
+					extendedSkeleton.dispose();
 				}
 			}
 		}

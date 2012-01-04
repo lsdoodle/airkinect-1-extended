@@ -25,9 +25,9 @@ package com.as3nui.airkinect.extended.ui.objects {
 	 *		circle.graphics.drawCircle(0, 0, 20);
 	 *
 	 *		//Create a Cursor to use for the left hand
-	 *		//source and ID parameters can be anything, they are only set to "_kinect_" and SkeletonPosition.HAND_LEFT for easy understanding
+	 *		//source and ID parameters can be anything, they are only set to "_kinect_" and AIRKinectSkeleton.HAND_LEFT for easy understanding
 	 *		//they could just as easily be "mysource" and 1.
-	 *  	_leftHandCursor = new Cursor("_kinect_", SkeletonPosition.HAND_LEFT, circle);
+	 *  	_leftHandCursor = new Cursor("_kinect_", AIRKinectSkeleton.HAND_LEFT, circle);
 	 *
 	 *  	//Add the Cursor to the UIManager
 	 *  	UIManager.addCursor(_leftHandCursor);

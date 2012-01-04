@@ -254,11 +254,11 @@ package com.as3nui.airkinect.extended.simulator.helpers {
 		 */
 		private static function onRecordStopped():void {
 			_currentRecordedXML = _skeletonRecorder.currentRecordingXML;
-			_onRecordingStopped.dispatch(_skeletonRecorder.currentRecordingXML);
+			_onRecordingStopped.dispatch(_currentRecordedXML);
 
 			if (saveFileOnRecordFinished) {
 				var ba:ByteArray = new ByteArray();
-				ba.writeUTFBytes(_skeletonRecorder.currentRecordingXML);
+				ba.writeUTFBytes(_currentRecordedXML);
 
 				var fr:FileReference = new FileReference();
 				fr.addEventListener(Event.SELECT, onSaveSuccess);
